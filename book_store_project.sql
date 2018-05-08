@@ -90,6 +90,7 @@ insert into categories values ("history");
 insert into categories values ("geography");
 
 DELIMITER ;;
+
 -- when update no_of_copies, check the threshold
 create trigger 	update_quantity_threshold_trigger
 before update on books
@@ -112,13 +113,13 @@ end;;
 
 
 -- if the book is ordered already, update the no_of_copies value
--- create trigger 	insert_order_pk_trigger
--- before insert on store_orders
--- for each row begin
--- 	if(exists (select isbn from store_orders where isbn = new.isbn)) then
--- 		delete from store_orders where isbn = new.isbn;
---     end if;
--- end;;
+create trigger 	insert_order_pk_trigger
+before insert on store_orders
+for each row begin
+ 	if(exists (select isbn from store_orders where isbn = new.isbn)) then
+ 		delete from store_orders where isbn = new.isbn;
+     end if;
+ end;;
 
 
 -- if the user want to update no_of_copies with -ve values, reject
@@ -146,6 +147,50 @@ end;;
 
 DELIMITER ;
 
+-- Searching procedures which will be called in the front end to support the user with the required information
+
+DELIMITER $$
+CREATE PROCEDURE search_by_isbn (ISBN int)
+BEGIN
+	SELECT * from books where books.isbn = ISBN;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE search_by_title (Title varchar(100))
+BEGIN
+	SELECT * from books where books.title = Title;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE search_by_category (category varchar(20))
+BEGIN
+	SELECT * from books where books.category = category;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE search_by_author (author varchar(100))
+BEGIN
+	SELECT * from authors join books on authors.isbn = books.isbn where authors.author = author;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE search_by_publisher (publisher varchar(100))
+BEGIN
+	SELECT * from books where books.publisher_name = publisher;
+END $$
+
+DELIMITER ;
+
+call search_by_category('art');
+
 select * from store_orders;
 select * from books;
 delete from store_orders where isbn=2;
@@ -155,5 +200,19 @@ select * from books;
 insert into publishers values("pubB", "addB");
 insert into publishers values("pub", "add");
 
-insert into books values(2, "B", "pubB", 1000, 5, "art", 10, 30);
-insert into books values(3, "a", "pub", 2000, 9.5, "art", 20, 13);
+insert into books values(1, "C pogramming", "pubB", 2000, 9.5, "art", 20, 50);
+insert into authors values(1,"Denis Richie");
+insert into books values(2, " Do Androids Dream of Electric Sheep?", "pubB", 1000, 5, "science", 10, 30);
+insert into authors values(2," Philip K. Dick");
+insert into books values(3, " Everything I Never Told You", "pub", 2000, 9.5, "History", 20, 50);
+insert into authors values(3,"Celeste Ng");
+insert into books values(4, "Harry Potter", "pubB", 2000, 9.5, "art", 20, 50);
+insert into authors values(4,"J.K Rowling");
+insert into books values(5, "Effective Java", "pub", 2000, 9.5, "art", 20, 50);
+insert into authors values(5,"John");
+-- SET FOREIGN_KEY_CHECKS=0;
+-- SET SQL_SAFE_UPDATES = 0;
+-- delete from books;
+-- delete from authors;
+
+update books set no_of_copies = 10 where isbn = 3;
