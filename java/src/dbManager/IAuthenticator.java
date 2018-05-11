@@ -9,14 +9,13 @@ package dbManager;
  */
 public interface IAuthenticator {
 
-
-
 	/**
 	 * authenticate if the given user name and password are exist or not
 	 * 
-	 * @return true if the authentication pass, false if failed
+	 * @return 0 if the authentication pass as user, 1 if manager and -1 if not
+	 *         authorized
 	 */
-	public boolean authenticate(String email, String password);
+	public int authenticate(String email, String password);
 
 	/**
 	 * 
@@ -26,7 +25,7 @@ public interface IAuthenticator {
 	 * @return true if the user added successfully , false if not
 	 */
 	public boolean addNewUser(String[] userInfo);
-	
+
 	/**
 	 * hash the given password using MD5
 	 * 

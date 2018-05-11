@@ -1,37 +1,41 @@
 package operations;
 
 public class CurrentUser {
-	
+
 	private static CurrentUser currUser;
 	private String email;
-	private String [] info;
+
 	private CurrentUser() {
 		currUser = null;
 		email = null;
-		info = null;
 	}
-	
+
 	public static CurrentUser getInstance() {
-		if(currUser == null)
+		if (currUser == null)
 			currUser = new CurrentUser();
 		return currUser;
 	}
-	
+
 	public String getEmail() {
 		return this.email;
 	}
-	
+
 	public void setEmail(String email) {
 		this.email = email;
-		
+
 	}
-	
+
 	public String[] getInfo() {
-		if(this.email == null) {
-			System.out.println("Error please login first or set current user email!");
+		if (this.email == null) {
+			System.out.println(
+					"Error please login first or set current user email!");
 			return null;
 		}
 		IUserOperations operations = new UserOperations();
 		return operations.getUserInfo(this.email);
+	}
+
+	public void logOut() {
+		this.email = null;
 	}
 }

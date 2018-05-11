@@ -17,7 +17,7 @@ public class Authenticator implements IAuthenticator {
 	}
 
 	@Override
-	public boolean authenticate(String email, String password) {
+	public int authenticate(String email, String password) {
 
 		IConnector connector = Connector.getInstance();
 		boolean success = connector
@@ -25,7 +25,7 @@ public class Authenticator implements IAuthenticator {
 		if (!success) {
 			System.out.println(
 					"Database acess error while authenticating an user!");
-			return false;
+			return -1;
 		}
 		try {
 			boolean isUser = connector.getResultSet().first();
@@ -33,7 +33,7 @@ public class Authenticator implements IAuthenticator {
 			if (!isUser) { // no result from sql select
 				System.out.println("Authentication failed for user: " + email
 						+ " >> Invalid user name !");
-				return false;
+				return -1;
 			}
 
 			// check for the given password
@@ -43,16 +43,21 @@ public class Authenticator implements IAuthenticator {
 			if (!passHashed.equals(userPassHashed)) {
 				System.out.println("Authentication failed for user: " + email
 						+ " >> Invalid password !");
-				return false;
+				return -1;
 			}
-			// success
-			return true;
+
+			connector.run(
+					"select * from managers where mngr_email='" + email + "'");
+			if (connector.getResultSet().first()) // if manager
+				return 1;
+			// normal user
+			return 0;
 
 		} catch (SQLException e) {
 			System.out.println(
 					"Database acess error while authenticating an user!");
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 	}
 

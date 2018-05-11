@@ -49,7 +49,7 @@ public class UserOperations implements IUserOperations {
 
 		if (attributes.length != values.length) {
 			System.out.println(
-					"Error in editing info, attributes and values lengths don't match");
+					"Error in editing user info, attributes and values lengths don't match");
 			return false;
 		}
 
