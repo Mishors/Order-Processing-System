@@ -16,7 +16,7 @@ public interface IAuthenticator {
 	 * 
 	 * @return true if the authentication pass, false if failed
 	 */
-	public boolean authenticate(String userName, String password);
+	public boolean authenticate(String email, String password);
 
 	/**
 	 * 

@@ -20,10 +20,15 @@ public class Authenticator implements IAuthenticator {
 	public boolean authenticate(String email, String password) {
 
 		IConnector connector = Connector.getInstance();
-		boolean isUser = connector
+		boolean success = connector
 				.run("select * from users where " + "email = '" + email + "'");
-
+		if (!success) {
+			System.out.println(
+					"Database acess error while authenticating an user!");
+			return false;
+		}
 		try {
+			boolean isUser = connector.getResultSet().first();
 			// check for the given user name
 			if (!isUser) { // no result from sql select
 				System.out.println("Authentication failed for user: " + email
@@ -33,8 +38,8 @@ public class Authenticator implements IAuthenticator {
 
 			// check for the given password
 			String passHashed = hashPass(password);
-			String userPassHashed = connector.getResultSet()
-					.getString("user_password");
+			ResultSet resultSet = connector.getResultSet();
+			String userPassHashed = resultSet.getString("user_password");
 			if (!passHashed.equals(userPassHashed)) {
 				System.out.println("Authentication failed for user: " + email
 						+ " >> Invalid password !");
@@ -63,7 +68,7 @@ public class Authenticator implements IAuthenticator {
 		for (int i = 0; i < userInfo.length - 1; i++)
 			values += "'" + userInfo[i] + "', ";
 		values += "'" + userInfo[userInfo.length - 1] + "'";
-		connector.run("inesrt into users values(" + values + ")");
+		connector.run("insert into users values(" + values + ")");
 
 		if (connector.getUpdatedCount() < 0) // an error while inserting
 			return false;

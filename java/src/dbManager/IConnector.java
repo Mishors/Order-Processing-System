@@ -22,7 +22,7 @@ public interface IConnector {
 	 * 
 	 * @param takes
 	 *            a sql command as string
-	 * @return true if the command was select and the result is not empty
+	 * @return true if the command was select and executed successfully
 	 */
 	public boolean run(String command);
 
