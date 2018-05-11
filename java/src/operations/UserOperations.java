@@ -14,17 +14,26 @@ public class UserOperations implements IUserOperations {
 	public String[] getUserInfo(String email) {
 		// TODO Auto-generated method stub
 		IConnector connector = Connector.getInstance();
-		boolean isUser = connector
+		boolean success = connector
 				.run("select * from users where email='" + email + "'");
+		if (!success) {
+			System.out
+					.println("Database getting information of user with email=!"
+							+ email);
+			return null;
+		}
 		try {
-
-			if (!isUser) // if no user with this email in data
+			boolean isUser = connector.getResultSet().first();
+			if (!isUser) { // if no user with this email in data
+				System.out.println(
+						"Database getting information of user with email=!"
+								+ email);
 				return null;
-
+			}
 			String[] info = new String[6];
 			ResultSet resultSet = connector.getResultSet();
-			for (int i = 0; i < 6; i++)
-				info[i] = resultSet.getString(i);
+			for (int i = 1; i <= 6; i++)
+				info[i - 1] = resultSet.getString(i);
 			return info;
 
 		} catch (SQLException e) {

@@ -27,6 +27,10 @@ public class CurrentUser {
 	}
 	
 	public String[] getInfo() {
+		if(this.email == null) {
+			System.out.println("Error please login first or set current user email!");
+			return null;
+		}
 		IUserOperations operations = new UserOperations();
 		return operations.getUserInfo(this.email);
 	}
