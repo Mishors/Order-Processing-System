@@ -46,6 +46,8 @@ create table users(
     primary key (email)
 );
 
+insert into users values('misho@yahoo.com','misho','123','ll','ff','scscs');
+
 create table user_phones(
 	email varchar(320) not null,
     phone varchar(20) not null,
@@ -71,6 +73,17 @@ create table customer_orders(
     sale_date datetime not null,
     primary key (id)
 );
+
+
+select * from customer_orders;
+insert into customer_orders values (4,1,'misho@yahoo.com',1,NOW());
+
+
+-- Indices on the attributes that we assume that we want to optimize 
+CREATE INDEX idx_ISBN ON books (ISBN);
+CREATE INDEX idx_TITLE ON books (TITLE);
+CREATE INDEX idx_AUTHOR ON Authors (author);
+
 
 alter table books add constraint books_categories_fk foreign key (category) references categories(category);
 alter table books add constraint books_publishers_fk foreign key (publisher_name) references publishers(publisher_name);
@@ -189,6 +202,36 @@ END $$
 
 DELIMITER ;
 
+SET GLOBAL event_scheduler = ON;
+
+DELIMITER |
+
+CREATE EVENT  book_store.ThreeMonthRemovalEvent
+ON SCHEDULE
+    EVERY 2 MINUTE 
+COMMENT ''
+DO
+    DELETE FROM book_store.customer_orders WHERE TIMESTAMPDIFF(MINUTE,sale_date,NOW()) >= 1;
+
+    
+DELIMITER ;
+
+
+
+CREATE EVENT  RemovalEvent
+ON SCHEDULE
+    EVERY 1 SECOND 
+COMMENT ''
+DO
+    insert into customer_orders (isbn,cstmr_email,no_of_copies,sale_date) values (2,1,'misho@yahoo.com',1,NOW());
+
+
+drop event RemovalEvent;
+
+show processlist;
+
+select * from customer_orders;
+
 call search_by_category('art');
 
 select * from store_orders;
@@ -214,5 +257,7 @@ insert into authors values(5,"John");
 -- SET SQL_SAFE_UPDATES = 0;
 -- delete from books;
 -- delete from authors;
+
+
 
 update books set no_of_copies = 10 where isbn = 3;
