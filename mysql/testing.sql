@@ -6,6 +6,18 @@ delete from store_orders where isbn=2;
 select * from store_orders;
 select * from books;
 
+update books set no_of_copies=10 where isbn=1;
+
+select * from store_orders;
+
+insert into customer_orders values(21, 1, "y@c.o", 20, now());
+select * from books;
+select * from users;
+select * from customer_orders;
+
+delete from store_orders where isbn=1;
+update books set no_of_copies=10 where isbn=1;
+
 insert into publishers values("pubB", "addB");
 insert into publishers values("pub", "add");
 
@@ -27,3 +39,6 @@ insert into authors values(5,"John");
 update books set no_of_copies = 10 where isbn = 3;
 
 select * from books;
+
+
+select * from categories where (category='science' or category='art') and (category='science' or category='do');

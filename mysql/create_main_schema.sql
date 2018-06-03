@@ -82,6 +82,12 @@ alter table customer_orders add constraint customer_orders_users_fk foreign key 
 alter table user_phones add constraint user_phones_users_fk foreign key (email) references users(email);
 alter table managers add constraint managers_users_fk foreign key (mngr_email) references users(email);
 
+create index idx_category on books (category);
+create index idx_publisher on books (publisher_name);
+CREATE INDEX idx_isbn on books (isbn);
+CREATE INDEX idx_title on books (title);
+CREATE INDEX idx_author on authors (author);
+
 -- each inserted value in gui should be converted to lowercase letters 
 insert into categories values ("science");
 insert into categories values ("art");

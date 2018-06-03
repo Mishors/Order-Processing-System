@@ -1,15 +1,17 @@
 DELIMITER ;;
 
+drop trigger if exists update_quantity_threshold_trigger;;
 -- when update no_of_copies, check the threshold
 create trigger 	update_quantity_threshold_trigger
 before update on books
 for each row begin
-	if(new.no_of_copies < new.threshold) then
+	if(new.no_of_copies < new.threshold and old.no_of_copies >= old.threshold) then
 		insert into store_orders 
-		values(new.isbn, new.threshold - new.no_of_copies + 20);
+		values(new.threshold);
     end if;
 end;;
 
+drop trigger if exists insert_quantity_threshold_trigger;;
 -- when insert new rows, check no_of_copies with the threshold
 create trigger 	insert_quantity_threshold_trigger
 after insert on books
@@ -20,17 +22,7 @@ for each row begin
     end if;
 end;;
 
-
--- if the book is ordered already, update the no_of_copies value
-create trigger 	insert_order_pk_trigger
-before insert on store_orders
-for each row begin
- 	if(exists (select isbn from store_orders where isbn = new.isbn)) then
- 		delete from store_orders where isbn = new.isbn;
-     end if;
- end;;
-
-
+drop trigger if exists negative_quantity_trigger;;
 -- if the user want to update no_of_copies with -ve values, reject
 create trigger 	negative_quantity_trigger
 before update on books
@@ -39,7 +31,25 @@ for each row begin
  		signal sqlstate '45000';
      end if;
 end;;
--- 
+
+
+drop trigger if exists customer_order_trigger;;
+-- if the customer orders a book decrease no of copies in book
+create trigger 	customer_order_trigger
+before insert on customer_orders
+for each row begin
+	update books set books.no_of_copies = books.no_of_copies - new.no_of_copies where books.isbn = new.isbn;
+end;;
+
+
+drop trigger if exists confirm_store_order;;
+-- if store order is confirmed, add copies to the book in books table
+create trigger 	confirm_store_order
+before delete on store_orders
+for each row begin
+	update books set books.no_of_copies = books.no_of_copies + old.no_of_copies where books.isbn = old.isbn;
+end;;
+
 -- delimiter ;;
 -- drop trigger store_orders_deletion_trigger;;
 -- -- when delete an store order, increase the no_of_copies in the books table
