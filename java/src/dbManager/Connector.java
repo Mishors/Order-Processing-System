@@ -45,13 +45,15 @@ public class Connector implements IConnector {
 	public boolean run(String command) {
 		try {
 			boolean result = statement.execute(command);
-			if(statement.getResultSet() != null)
-				statement.getResultSet().next();
-			return result;
+			if(command.substring(0, 6).equals("select"))
+				return result;
+			// if not select query, and success return true
+			return true;
 		} catch (SQLException e) {
-			System.out.println("Error while executing query:");
+			System.out.println("Error while executing query: ");
 			System.out.println("\"" + command + "\"");
 			e.printStackTrace();
+			// if fails
 			return false;
 		}
 	}

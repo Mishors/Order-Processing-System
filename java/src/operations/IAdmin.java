@@ -1,6 +1,6 @@
 package operations;
 
-public interface IManagerOperations extends IUserOperations {
+public interface IAdmin extends IUser {
 
 	/**
 	 * 

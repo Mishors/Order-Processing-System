@@ -9,7 +9,7 @@ import java.sql.ResultSet;
  * @author yousef
  *
  */
-public interface IUserOperations {
+public interface IUser {
 
 	/**
 	 * @param email
@@ -22,23 +22,25 @@ public interface IUserOperations {
 	/**
 	 * 
 	 * @param attributes
-	 *            , cols name to be updated
+	 *            , columns name to be updated
 	 * @param values
 	 *            , values with the same length of attributes
 	 * @return true if updated successfully, false if not
 	 */
-	boolean editUserInfo(String[] attributes, String[] values);
-	
+	boolean editUserInfo(String email, String[] attributes, String[] values);
+
 	/**
 	 * 
-	 * @param attribute to make condition on it
+	 * @param attribute
+	 *            to make condition on it
 	 * @param value
 	 * @return the books info
 	 */
 	ResultSet searchForBooks(String attribute, Object value);
-	
+
 	/**
 	 * same as previous but takes a full string condition from caller
+	 * 
 	 * @param condition
 	 * @return
 	 */

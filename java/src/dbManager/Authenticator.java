@@ -24,7 +24,7 @@ public class Authenticator implements IAuthenticator {
 				.run("select * from users where " + "email = '" + email + "'");
 		if (!success) {
 			System.out.println(
-					"Database acess error while authenticating an user!");
+					"Database access error while authenticating an user!");
 			return -1;
 		}
 		try {
@@ -103,4 +103,16 @@ public class Authenticator implements IAuthenticator {
 		}
 	}
 
+	public boolean setAsAdmin(String email) {
+		
+		IConnector connector = Connector.getInstance();
+		boolean success = connector
+				.run("insert into managers values('"+ email + "')");
+		if (!success) {
+			System.out.println(
+					"Database  error while setting user as admin!");
+			return false;
+		}
+		return true;
+	}
 }

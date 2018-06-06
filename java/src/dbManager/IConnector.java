@@ -43,7 +43,7 @@ public interface IConnector {
 	/**
 	 * 
 	 * @return the result set for the last executed statement if the last
-	 *         statement was query, it returns null
+	 *         statement wasn't query, it returns null
 	 */
 	public ResultSet getResultSet();
 
