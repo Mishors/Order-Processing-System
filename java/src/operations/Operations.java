@@ -161,25 +161,38 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public boolean orderBook(String isbn, String noOfCopies) {
 		IConnector connector = Connector.getInstance();
-		connector.run("insert into store_orders values(" + isbn + ", "
-				+ noOfCopies + ")");
-
-		if (connector.getUpdatedCount() < 1) { // if failed
-			System.out.println("Error while inserting order!");
+		connector.run("select * from store_orders where isbn = " + isbn);
+		try {
+			if (connector.getResultSet().first()) {
+				connector.run(
+						"update store_orders set no_of_copies = no_of_copies + "
+								+ noOfCopies + " where isbn = " + isbn);
+			} else {
+				connector.run("insert into store_orders values(" + isbn + ", "
+						+ noOfCopies + ")");
+			}
+			if (connector.getUpdatedCount() < 1) { // if failed
+				System.out.println("Error while inserting order!");
+				return false;
+			}
+			// success
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Error while ordering book!");
+			e.printStackTrace();
 			return false;
 		}
-		// success
-		return true;
+
 	}
 
 	@Override
 	public boolean confirmOrder(String isbn) {
 		IConnector connector = Connector.getInstance();
-		connector.run("delete from store_orders where isbn=" + isbn);
+		connector.run("delete from store_orders where isbn = " + isbn);
 
 		if (connector.getUpdatedCount() < 1) { // if failed
 			System.out
-					.println("Error while confirming order for book with isbn="
+					.println("Error while confirming order for book with isbn = "
 							+ isbn + " !");
 			return false;
 		}

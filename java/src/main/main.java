@@ -118,6 +118,16 @@ public class main {
 					System.out.print(resultSet.getString(i + 1) + " -- ");
 				System.out.println();
 			}
+			System.out.println("ordering book id:1 nocopies:15    "
+					+ admin.orderBook("1", "15"));
+			// System.out.println("confrming order of id:1 good " +
+			// admin.confirmOrder("1"));
+			// System.out.println("confrming order of id:2000 bad! " +
+			// admin.confirmOrder("2000"));
+			System.out.println(admin.promoteCustomer("a@c.o"));
+			connector.run("select * from managers");
+			while (connector.getResultSet().next())
+				System.out.println(connector.getResultSet().getString(1));
 			System.out.println("\n------------------------------------");
 
 		} catch (SQLException | ParseException e) {
