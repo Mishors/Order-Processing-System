@@ -47,4 +47,14 @@ public class ShoppingCart implements IShoppingCart {
 
 	}
 
+	@Override
+	public void emptyCart() {
+		books = new ArrayList<>();
+	}
+
+	@Override
+	public int getCartSize() {
+		return books.size();
+	}
+
 }

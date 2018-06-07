@@ -28,4 +28,16 @@ public interface IShoppingCart {
 	 *         cart
 	 */
 	boolean removeItem(String isbn);
+
+	/**
+	 * make cart empty
+	 */
+	void emptyCart();
+
+	/**
+	 * get number of items in the cart
+	 * 
+	 * @return number of items in the cart
+	 */
+	int getCartSize();
 }
