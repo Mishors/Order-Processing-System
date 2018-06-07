@@ -6,10 +6,6 @@ import dbManager.*;
 import operations.*;
 
 public class main {
-	private static Connection connect = null;
-	private static Statement statement = null;
-	private PreparedStatement preparedStatement = null;
-	private static ResultSet resultSet = null;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -18,15 +14,20 @@ public class main {
 		connector.connect();
 		IUser user = new opertaions();
 		try {
-			
+
 			System.out.println(
 					"------------test selecting all books-----------------");
 			System.out.println(connector.run("select * from books"));
+			String[][] books = new String[6][6];
+			int counter = 0;
 			while (connector.getResultSet().next()) {
 				for (int i = 0; i < 6; i++) {
 					System.out.print(
 							connector.getResultSet().getString(i + 1) + " -- ");
+					books[counter][i] = connector.getResultSet()
+							.getString(i + 1);
 				}
+				counter++;
 				System.out.println();
 			}
 			System.out.println(
@@ -53,8 +54,8 @@ public class main {
 				System.out.println();
 			}
 
-			System.out
-					.println("\n-------------test connector run----------------");
+			System.out.println(
+					"\n-------------test connector run----------------");
 			connector.run("select * from users");
 			while (connector.getResultSet().next()) {
 				for (int i = 0; i < 6; i++)
@@ -78,8 +79,21 @@ public class main {
 				System.out
 						.println(user.getUserInfo("yousefzook@outlook.com")[i]);
 
+			System.out.println(
+					"\n----------------test shopping cart--------------------");
+			IShoppingCart cart = new ShoppingCart();
+			for (int i = 0; i < books.length; i++)
+				cart.addItem(books[i]);
+			String[][] res = cart.getItems();
+			for (int i = 0; i < res.length; i++) {
+				for (int j = 0; j < res[0].length; j++)
+					System.out.print(res[i][j] + " - ");
+				System.out.println();
+			}
+			System.out.println("total prices = " + cart.getTotalPrices());
+			System.out.println("remove bad: " + cart.removeItem("1000"));
+			System.out.println("remove good: " + cart.removeItem("19"));
 			System.out.println("\n------------------------------------");
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
