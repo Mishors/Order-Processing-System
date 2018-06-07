@@ -5,9 +5,13 @@ drop trigger if exists update_quantity_threshold_trigger;;
 create trigger 	update_quantity_threshold_trigger
 before update on books
 for each row begin
+	-- if the user want to update no_of_copies with -ve values, reject
+	if(new.no_of_copies < 0) then
+ 		signal sqlstate '45000';
+     end if;
 	if(new.no_of_copies < new.threshold and old.no_of_copies >= old.threshold) then
 		insert into store_orders 
-		values(new.threshold);
+		values(new.isbn, new.threshold);
     end if;
 end;;
 
@@ -22,15 +26,6 @@ for each row begin
     end if;
 end;;
 
-drop trigger if exists negative_quantity_trigger;;
--- if the user want to update no_of_copies with -ve values, reject
-create trigger 	negative_quantity_trigger
-before update on books
-for each row begin
-	if(new.no_of_copies < 0) then
- 		signal sqlstate '45000';
-     end if;
-end;;
 
 
 drop trigger if exists customer_order_trigger;;

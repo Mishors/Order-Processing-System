@@ -1,4 +1,5 @@
 call search_by_category('art');
+use book_store;
 
 select * from store_orders;
 select * from books;
@@ -6,10 +7,12 @@ delete from store_orders where isbn=2;
 select * from store_orders;
 select * from books;
 
-update books set no_of_copies=10 where isbn=1;
+update books set no_of_copies=50 where isbn=3;
+
+update books set no_of_copies=100;
 
 select * from store_orders;
-
+delete from store_orders;
 insert into customer_orders values(21, 1, "y@c.o", 20, now());
 select * from books;
 select * from users;

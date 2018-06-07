@@ -37,7 +37,7 @@ public interface IAdmin extends IUser {
 	boolean confirmOrder(String isbn);
 	
 	/**
-	 * promote custmoer to be a manager
+	 * promote customer to be a manager
 	 * @param customerEmail
 	 * @return true if successfully finished
 	 */

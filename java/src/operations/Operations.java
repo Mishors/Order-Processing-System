@@ -7,7 +7,7 @@ import dbManager.Authenticator;
 import dbManager.Connector;
 import dbManager.IConnector;
 
-public class opertaions implements IAdmin, IUser {
+public class Operations implements IAdmin, IUser {
 
 	@Override
 	public String[] getUserInfo(String email) {
@@ -89,15 +89,7 @@ public class opertaions implements IAdmin, IUser {
 
 		String command = "select * from books where ";
 
-		switch (value.getClass().getSimpleName()) {
-		case "Integer":
-		case "Float":
-			command += attribute + "=" + value.toString();
-			break;
-		case "String":
-			command += attribute + "='" + value.toString() + "'";
-			break;
-		}
+		command += attribute + "='" + value.toString() + "'";
 
 		IConnector connector = Connector.getInstance();
 		connector.run(command);
@@ -112,7 +104,6 @@ public class opertaions implements IAdmin, IUser {
 
 		return connector.getResultSet();
 	}
-
 
 	@Override
 	public boolean addNewBook(String[] bookInfo) {
@@ -146,18 +137,7 @@ public class opertaions implements IAdmin, IUser {
 
 		// adding values in command
 		for (int i = 0; i < attributes.length; i++) {
-			switch (attributes[i]) {
-			case "isbn":
-			case "publishing_year":
-			case "price":
-			case "threshold":
-			case "no_of_copies":
-				command += attributes[i] + "=" + values[i];
-				break;
-			default:
-				command += attributes[i] + "='" + values[i] + "'";
-				break;
-			}
+			command += attributes[i] + "='" + values[i] + "'";
 			if (i != attributes.length - 1)
 				command += ", ";
 		}
