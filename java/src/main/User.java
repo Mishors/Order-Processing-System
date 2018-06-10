@@ -47,6 +47,7 @@ public class User extends JFrame {
 	private JTextField textField_10;
 	private JTextField textField_11;
 	private JTextField textField_12;
+	private JTextField textField_13;
 
 	/**
 	 * Launch the application.
@@ -499,6 +500,46 @@ public class User extends JFrame {
 		lblGetUserInfo.setFont(new Font("Calibri", Font.BOLD, 25));
 		lblGetUserInfo.setBounds(20, 11, 182, 31);
 		panel_3.add(lblGetUserInfo);
+		
+		JLabel lblYouCanUse = new JLabel("You can use and , or and brackets\r\n");
+		lblYouCanUse.setFont(new Font("Calibri", Font.BOLD, 20));
+		lblYouCanUse.setBounds(44, 51, 478, 31);
+		panel_3.add(lblYouCanUse);
+		
+		JLabel lblForExample = new JLabel("For example :");
+		lblForExample.setFont(new Font("Calibri", Font.BOLD, 20));
+		lblForExample.setBounds(44, 86, 478, 31);
+		panel_3.add(lblForExample);
+		
+		JLabel lblisbnAndTitlec = new JLabel("(Isbn=2 and title=\"C Programming\") or Price<50");
+		lblisbnAndTitlec.setFont(new Font("Calibri", Font.BOLD, 20));
+		lblisbnAndTitlec.setBounds(44, 119, 478, 31);
+		panel_3.add(lblisbnAndTitlec);
+		
+		JLabel lblCondition = new JLabel("Condition");
+		lblCondition.setFont(new Font("Calibri", Font.BOLD, 20));
+		lblCondition.setBounds(44, 217, 94, 31);
+		panel_3.add(lblCondition);
+		
+		textField_13 = new JTextField();
+		textField_13.setBounds(148, 218, 452, 31);
+		panel_3.add(textField_13);
+		textField_13.setColumns(10);
+		
+		JButton btnConfirm_2 = new JButton("Confirm");
+		btnConfirm_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(textField_13.getText() != "")
+				{
+					IUser u = new Operations();
+					u.searchForBooksAdvanced(textField_13.getText());
+				}
+			}
+		});
+		btnConfirm_2.setBounds(469, 329, 89, 23);
+		panel_3.add(btnConfirm_2);
+		
+		
 		
 	}
 }
