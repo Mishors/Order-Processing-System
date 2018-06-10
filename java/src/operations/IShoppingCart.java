@@ -58,4 +58,5 @@ public interface IShoppingCart {
 	 * @return true if checkout correctly, false otherwise
 	 */
 	boolean checkout(String cardNumber, Date expiryDate);
+	
 }

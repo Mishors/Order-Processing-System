@@ -9,11 +9,13 @@ select * from books;
 
 update books set no_of_copies=50 where isbn=3;
 
-update books set no_of_copies=100;
 
+update books set no_of_copies=100;
+delete from customer_orders;
 select * from store_orders;
 delete from store_orders;
-insert into customer_orders values(21, 1, "y@c.o", 20, now());
+select * from customer_orders;
+insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) values(1, "y@c.o", 1, now());
 select * from books;
 select * from users;
 select * from customer_orders;
@@ -38,6 +40,7 @@ insert into authors values(5,"John");
 -- SET SQL_SAFE_UPDATES = 0;
 -- delete from books;
 -- delete from authors;
+insert into users values("y@c.o", "yz","1234","y", "z", "alex");
 
 update books set no_of_copies = 10 where isbn = 3;
 

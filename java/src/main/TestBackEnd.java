@@ -8,7 +8,7 @@ import java.util.Date;
 import dbManager.*;
 import operations.*;
 
-public class main {
+public class TestBackEnd {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -83,7 +83,7 @@ public class main {
 
 			System.out.println(
 					"\n----------------test shopping cart--------------------");
-			IShoppingCart cart = new ShoppingCart();
+			IShoppingCart cart = new ShoppingCart("y@c.o");
 			for (int i = 0; i < books.length; i++) {
 				books[i][6] = "2";
 				cart.addItem(books[i]);

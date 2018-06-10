@@ -1,3 +1,4 @@
+drop schema if exists book_store;
 create schema if not exists book_store;
 use book_store;
 
@@ -64,7 +65,7 @@ create table store_orders(
 );
 
 create table customer_orders(
-	id int not null,
+	id int not null auto_increment,
     isbn int not null,
     cstmr_email varchar(320) not null,
     no_of_copies int not null,
