@@ -144,7 +144,7 @@ public class GUI extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				while(textField.getText() == "" || textField_1.getText() == "");
-				Admin u = new Admin(textField_1.getText());
+				User u = new User(textField_1.getText());
 				u.setVisible(true);
 				setVisible(false);
 				

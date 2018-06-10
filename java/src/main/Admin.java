@@ -193,6 +193,8 @@ public class Admin extends JFrame {
 				textField_3.setText(data[3]);
 				textField_4.setText(data[4]);
 				textField_5.setText(data[5]);*/
+				
+				
 			}
 		});
 		btnOk.setBounds(289, 43, 89, 23);
