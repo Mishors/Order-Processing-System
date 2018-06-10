@@ -92,7 +92,12 @@ public class ShoppingCart implements IShoppingCart {
 							+ "values(" + book[0] + "," + activeUserEmail + ","
 							+ book[book.length - 1] + "," + new Date());
 		}
+		this.emptyCart();
 		return true;
 	}
 
+	public void logOut() {
+		this.emptyCart();
+		Connector.getInstance().closeConnection();
+	}
 }

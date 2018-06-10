@@ -5,7 +5,7 @@ select * from store_orders;
 select * from books;
 delete from store_orders where isbn=2;
 select * from store_orders;
-select * from books;
+select * from managers;
 
 update books set no_of_copies=50 where isbn=3;
 
@@ -40,8 +40,15 @@ insert into authors values(5,"John");
 -- SET SQL_SAFE_UPDATES = 0;
 -- delete from books;
 -- delete from authors;
-insert into users values("y@c.o", "yz","1234","y", "z", "alex");
-
+delete from users;
+insert into users values("a@c.o", "yz","1234","y", "z", "alex");
+insert into users values("b@c.o", "yz","1234","y", "z", "alex");
+insert into users values("c@c.o", "yz","1234","y", "z", "alex");
+insert into users values("d@c.o", "yz","1234","y", "z", "alex");
+insert into users values("e@c.o", "yz","1234","y", "z", "alex");
+insert into users values("f@c.o", "yz","1234","y", "z", "alex");
+delete from managers;
+insert into managers values("y@c.o"),("a@c.o");
 update books set no_of_copies = 10 where isbn = 3;
 
 select * from books;

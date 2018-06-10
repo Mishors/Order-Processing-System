@@ -5,6 +5,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import operations.IShoppingCart;
+
 public class Authenticator implements IAuthenticator {
 
 	private static IAuthenticator authenticator;
@@ -43,7 +45,7 @@ public class Authenticator implements IAuthenticator {
 			if (!passHashed.equals(userPassHashed)) {
 				System.out.println("Authentication failed for user: " + email
 						+ " >> Invalid password !");
-				return -1;
+				return -2;
 			}
 
 			connector.run(
@@ -57,7 +59,7 @@ public class Authenticator implements IAuthenticator {
 			System.out.println(
 					"Database acess error while authenticating an user!");
 			e.printStackTrace();
-			return -1;
+			return -3;
 		}
 	}
 
@@ -115,4 +117,5 @@ public class Authenticator implements IAuthenticator {
 		}
 		return true;
 	}
+	
 }
