@@ -347,6 +347,112 @@ public class User extends JFrame {
 				lblGetUserInfo.setBounds(20, 11, 182, 31);
 				panel_3.add(lblGetUserInfo);
 				
+				JRadioButton rdbtnNewRadioButton = new JRadioButton("Isbn");
+				rdbtnNewRadioButton.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnNewRadioButton.setBounds(44, 43, 191, 31);
+				panel_3.add(rdbtnNewRadioButton);
+				
+				textField = new JTextField();
+				textField.setPreferredSize(new Dimension(6, 23));
+				textField.setBounds(255, 44, 178, 31);
+				panel_3.add(textField);
+				textField.setColumns(10);
+				
+				JRadioButton rdbtnTitle = new JRadioButton("Title");
+				rdbtnTitle.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnTitle.setBounds(44, 87, 191, 31);
+				panel_3.add(rdbtnTitle);
+				
+				JRadioButton rdbtnPublisherName = new JRadioButton("Publisher name");
+				rdbtnPublisherName.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnPublisherName.setBounds(44, 131, 191, 31);
+				panel_3.add(rdbtnPublisherName);
+				
+				JRadioButton rdbtnPublishingYear = new JRadioButton("Publishing year");
+				rdbtnPublishingYear.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnPublishingYear.setBounds(44, 175, 191, 31);
+				panel_3.add(rdbtnPublishingYear);
+				
+				JRadioButton rdbtnPrice = new JRadioButton("Price");
+				rdbtnPrice.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnPrice.setBounds(44, 216, 191, 31);
+				panel_3.add(rdbtnPrice);
+				
+				JRadioButton rdbtnCategory = new JRadioButton("Category");
+				rdbtnCategory.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnCategory.setBounds(44, 256, 191, 31);
+				panel_3.add(rdbtnCategory);
+				
+				JRadioButton rdbtnThreshold = new JRadioButton("Threshold");
+				rdbtnThreshold.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnThreshold.setBounds(44, 295, 191, 31);
+				panel_3.add(rdbtnThreshold);
+				
+				JRadioButton rdbtnNoOfCopies = new JRadioButton("No of copies");
+				rdbtnNoOfCopies.setFont(new Font("Calibri", Font.PLAIN, 20));
+				rdbtnNoOfCopies.setBounds(44, 335, 191, 31);
+				panel_3.add(rdbtnNoOfCopies);
+				
+				ButtonGroup group = new ButtonGroup();
+				group.add(rdbtnNewRadioButton);
+				group.add(rdbtnNoOfCopies);
+				group.add(rdbtnThreshold);
+				group.add(rdbtnCategory);
+				group.add(rdbtnPrice);
+				group.add(rdbtnPublishingYear);
+				group.add(rdbtnPublisherName);
+				group.add(rdbtnTitle);
+				
+				textField_6 = new JTextField();
+				textField_6.setPreferredSize(new Dimension(6, 23));
+				textField_6.setColumns(10);
+				textField_6.setBounds(255, 86, 178, 31);
+				panel_3.add(textField_6);
+				
+				textField_7 = new JTextField();
+				textField_7.setPreferredSize(new Dimension(6, 23));
+				textField_7.setColumns(10);
+				textField_7.setBounds(255, 131, 178, 31);
+				panel_3.add(textField_7);
+				
+				textField_8 = new JTextField();
+				textField_8.setPreferredSize(new Dimension(6, 23));
+				textField_8.setColumns(10);
+				textField_8.setBounds(255, 175, 178, 31);
+				panel_3.add(textField_8);
+				
+				textField_9 = new JTextField();
+				textField_9.setPreferredSize(new Dimension(6, 23));
+				textField_9.setColumns(10);
+				textField_9.setBounds(255, 216, 178, 31);
+				panel_3.add(textField_9);
+				
+				textField_10 = new JTextField();
+				textField_10.setPreferredSize(new Dimension(6, 23));
+				textField_10.setColumns(10);
+				textField_10.setBounds(255, 256, 178, 31);
+				panel_3.add(textField_10);
+				
+				textField_11 = new JTextField();
+				textField_11.setPreferredSize(new Dimension(6, 23));
+				textField_11.setColumns(10);
+				textField_11.setBounds(255, 295, 178, 31);
+				panel_3.add(textField_11);
+				
+				textField_12 = new JTextField();
+				textField_12.setPreferredSize(new Dimension(6, 23));
+				textField_12.setColumns(10);
+				textField_12.setBounds(255, 335, 178, 31);
+				panel_3.add(textField_12);
+				
+				JButton btnConfirm_1 = new JButton("Confirm");
+				btnConfirm_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
+				btnConfirm_1.setBounds(466, 343, 89, 23);
+				panel_3.add(btnConfirm_1);
 				
 			}
 		});
@@ -394,111 +500,5 @@ public class User extends JFrame {
 		lblGetUserInfo.setBounds(20, 11, 182, 31);
 		panel_3.add(lblGetUserInfo);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("Isbn");
-		rdbtnNewRadioButton.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnNewRadioButton.setBounds(44, 43, 191, 31);
-		panel_3.add(rdbtnNewRadioButton);
-		
-		textField = new JTextField();
-		textField.setPreferredSize(new Dimension(6, 23));
-		textField.setBounds(255, 44, 178, 31);
-		panel_3.add(textField);
-		textField.setColumns(10);
-		
-		JRadioButton rdbtnTitle = new JRadioButton("Title");
-		rdbtnTitle.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnTitle.setBounds(44, 87, 191, 31);
-		panel_3.add(rdbtnTitle);
-		
-		JRadioButton rdbtnPublisherName = new JRadioButton("Publisher name");
-		rdbtnPublisherName.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnPublisherName.setBounds(44, 131, 191, 31);
-		panel_3.add(rdbtnPublisherName);
-		
-		JRadioButton rdbtnPublishingYear = new JRadioButton("Publishing year");
-		rdbtnPublishingYear.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnPublishingYear.setBounds(44, 175, 191, 31);
-		panel_3.add(rdbtnPublishingYear);
-		
-		JRadioButton rdbtnPrice = new JRadioButton("Price");
-		rdbtnPrice.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnPrice.setBounds(44, 216, 191, 31);
-		panel_3.add(rdbtnPrice);
-		
-		JRadioButton rdbtnCategory = new JRadioButton("Category");
-		rdbtnCategory.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnCategory.setBounds(44, 256, 191, 31);
-		panel_3.add(rdbtnCategory);
-		
-		JRadioButton rdbtnThreshold = new JRadioButton("Threshold");
-		rdbtnThreshold.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnThreshold.setBounds(44, 295, 191, 31);
-		panel_3.add(rdbtnThreshold);
-		
-		JRadioButton rdbtnNoOfCopies = new JRadioButton("No of copies");
-		rdbtnNoOfCopies.setFont(new Font("Calibri", Font.PLAIN, 20));
-		rdbtnNoOfCopies.setBounds(44, 335, 191, 31);
-		panel_3.add(rdbtnNoOfCopies);
-		
-		ButtonGroup group = new ButtonGroup();
-		group.add(rdbtnNewRadioButton);
-		group.add(rdbtnNoOfCopies);
-		group.add(rdbtnThreshold);
-		group.add(rdbtnCategory);
-		group.add(rdbtnPrice);
-		group.add(rdbtnPublishingYear);
-		group.add(rdbtnPublisherName);
-		group.add(rdbtnTitle);
-		
-		textField_6 = new JTextField();
-		textField_6.setPreferredSize(new Dimension(6, 23));
-		textField_6.setColumns(10);
-		textField_6.setBounds(255, 86, 178, 31);
-		panel_3.add(textField_6);
-		
-		textField_7 = new JTextField();
-		textField_7.setPreferredSize(new Dimension(6, 23));
-		textField_7.setColumns(10);
-		textField_7.setBounds(255, 131, 178, 31);
-		panel_3.add(textField_7);
-		
-		textField_8 = new JTextField();
-		textField_8.setPreferredSize(new Dimension(6, 23));
-		textField_8.setColumns(10);
-		textField_8.setBounds(255, 175, 178, 31);
-		panel_3.add(textField_8);
-		
-		textField_9 = new JTextField();
-		textField_9.setPreferredSize(new Dimension(6, 23));
-		textField_9.setColumns(10);
-		textField_9.setBounds(255, 216, 178, 31);
-		panel_3.add(textField_9);
-		
-		textField_10 = new JTextField();
-		textField_10.setPreferredSize(new Dimension(6, 23));
-		textField_10.setColumns(10);
-		textField_10.setBounds(255, 256, 178, 31);
-		panel_3.add(textField_10);
-		
-		textField_11 = new JTextField();
-		textField_11.setPreferredSize(new Dimension(6, 23));
-		textField_11.setColumns(10);
-		textField_11.setBounds(255, 295, 178, 31);
-		panel_3.add(textField_11);
-		
-		textField_12 = new JTextField();
-		textField_12.setPreferredSize(new Dimension(6, 23));
-		textField_12.setColumns(10);
-		textField_12.setBounds(255, 335, 178, 31);
-		panel_3.add(textField_12);
-		
-		JButton btnConfirm_1 = new JButton("Confirm");
-		btnConfirm_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		btnConfirm_1.setBounds(466, 343, 89, 23);
-		panel_3.add(btnConfirm_1);
 	}
 }
