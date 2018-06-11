@@ -113,6 +113,7 @@ public class shoppingCart extends JFrame {
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 panel_3.removeAll();
+                panel_3.repaint();
 				
 				JLabel label = new JLabel(email);
 				label.setBounds(350, 363, 250, 23);
@@ -236,7 +237,8 @@ public class shoppingCart extends JFrame {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 panel_3.removeAll();
-				
+                panel_3.repaint();
+                
 				JLabel label = new JLabel(email);
 				label.setBounds(350, 363, 250, 23);
 				panel_3.add(label);
@@ -249,7 +251,8 @@ public class shoppingCart extends JFrame {
 				
 				IShoppingCart s = new ShoppingCart(email);
 				String[][] data = s.getItems();
-				
+				String att[] = { "isbn" , "title" , "publisher_name" , "publishing_year" , "price" , "category" , "threshold" , "no_of_copies"};
+				TableExample t = new TableExample(att, data);
 			}
 		});
 		button.setBounds(289, 104, 89, 23);
@@ -264,6 +267,7 @@ public class shoppingCart extends JFrame {
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 panel_3.removeAll();
+                panel_3.repaint();
 				
 				JLabel label = new JLabel(email);
 				label.setBounds(350, 363, 250, 23);
@@ -297,6 +301,7 @@ public class shoppingCart extends JFrame {
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 panel_3.removeAll();
+                panel_3.repaint();
 				
 				JLabel label = new JLabel(email);
 				label.setBounds(350, 363, 250, 23);
@@ -344,6 +349,7 @@ public class shoppingCart extends JFrame {
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 panel_3.removeAll();
+                panel_3.repaint();
 				
 				JLabel label = new JLabel(email);
 				label.setBounds(350, 363, 250, 23);
@@ -366,6 +372,7 @@ public class shoppingCart extends JFrame {
 		button_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				    panel_3.removeAll();
+				    panel_3.repaint();
 					
 					JLabel label = new JLabel(email);
 					label.setBounds(350, 363, 250, 23);
@@ -399,6 +406,7 @@ public class shoppingCart extends JFrame {
 		button_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panel_3.removeAll();
+				panel_3.repaint();
 				
 				JLabel label = new JLabel(email);
 				label.setBounds(350, 363, 250, 23);

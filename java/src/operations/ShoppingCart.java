@@ -1,5 +1,6 @@
 package operations;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -87,10 +88,14 @@ public class ShoppingCart implements IShoppingCart {
 		IConnector connector = Connector.getInstance();
 		for (int i = 0; i < books.size(); i++) {
 			String[] book = books.get(i);
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String dateFormatted = sdf.format(date);
 			connector.run(
 					"insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) "
-							+ "values(" + book[0] + "," + activeUserEmail + ","
-							+ book[book.length - 1] + "," + new Date());
+							+ "values('" + book[0] + "','" + activeUserEmail
+							+ "','" + book[book.length - 1] + "','"
+							+ dateFormatted + "')");
 		}
 		this.emptyCart();
 		return true;

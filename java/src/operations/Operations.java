@@ -30,11 +30,19 @@ public class Operations implements IAdmin, IUser {
 								+ email);
 				return null;
 			}
-			String[] info = new String[6];
+			ArrayList<String> info = new ArrayList<>();
 			ResultSet resultSet = connector.getResultSet();
 			for (int i = 1; i <= 6; i++)
-				info[i - 1] = resultSet.getString(i);
-			return info;
+				info.add(resultSet.getString(i));
+
+			connector.run("select phone from user_phones where email='"
+					+ info.get(0) + "'");
+
+			resultSet = connector.getResultSet();
+			while (resultSet.next())
+				info.add(resultSet.getString(1));
+
+			return info.toArray(new String[info.size()]);
 
 		} catch (SQLException e) {
 			System.out
@@ -46,7 +54,7 @@ public class Operations implements IAdmin, IUser {
 
 	@Override
 	public boolean editUserInfo(String email, String[] attributes,
-			String[] values) {
+			String[] values, String[] phones) {
 		if (attributes.length != values.length) {
 			System.out.println(
 					"Error in editing user info, attributes and values lengths don't match");
@@ -55,32 +63,52 @@ public class Operations implements IAdmin, IUser {
 
 		IConnector connector = Connector.getInstance();
 		String command = "update users set ";
-
+		String newEmail = null;
 		// adding values in command
 		for (int i = 0; i < attributes.length - 1; i++) {
 			if (attributes[i] == "user_password") {
 				String hashedPass = Authenticator.getInstance()
 						.hashPass(values[i]);
 				command += attributes[i] + "='" + hashedPass + "', ";
-			} else
+			} else {
 				command += attributes[i] + "='" + values[i] + "', ";
+				if (attributes[i] == "email")
+					newEmail = values[i];
+			}
 		}
 		if (attributes[attributes.length - 1] == "user_password") {
 			String hashedPass = Authenticator.getInstance()
 					.hashPass(values[attributes.length - 1]);
 			command += attributes[attributes.length - 1] + "='" + hashedPass
 					+ "'";
-		} else
+		} else {
 			command += attributes[attributes.length - 1] + "='"
 					+ values[attributes.length - 1] + "'";
+			if (attributes[attributes.length - 1] == "email")
+				newEmail = values[attributes.length - 1];
+		}
 
 		// adding where condition
 		command += " where email='" + email + "'";
 
 		connector.run(command);
-
 		if (connector.getUpdatedCount() < 0) // error while updating
 			return false;
+
+		if (newEmail != null)
+			email = newEmail;
+
+		command = "delete from user_phones where email='" + email + "'";
+		connector.run(command);
+		if (phones == null) // this mean he removed all his phones
+			return true;
+
+		// insert new phones
+		for (int i = 0; i < phones.length; i++) {
+			command = "insert into user_phones values('" + email + "','"
+					+ phones[i] + "')";
+			connector.run(command);
+		}
 
 		// success
 		return true;
@@ -89,14 +117,21 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public String[][] searchForBooks(String attribute, Object value) {
 
-		String command = "select * from books where ";
-
-		command += attribute + "='" + value.toString() + "'";
+		ArrayList<String> authors = new ArrayList<>();
+		String command = "";
+		if (attribute == "authors") {
+			command = "select * from books where isbn in (select isbn "
+					+ "from authors where author='" + value + "')";
+		} else {
+			command = "select * from books where ";
+			command += attribute + "='" + value.toString() + "'";
+		}
 
 		IConnector connector = Connector.getInstance();
 		connector.run(command);
 
 		ResultSet rSet = connector.getResultSet();
+
 		return convertResultSet(rSet);
 	}
 
@@ -109,17 +144,32 @@ public class Operations implements IAdmin, IUser {
 		return convertResultSet(rSet);
 	}
 
+	// convert result set to array of strings 2d
 	private String[][] convertResultSet(ResultSet rSet) {
 		ArrayList<String[]> arr = new ArrayList<>();
 		String[][] result = null;
 		try {
+			String command = "";
+
+			IConnector connector = Connector.getInstance();
+			ArrayList<String> isbns = new ArrayList<>();
 			while (rSet.next()) {
-				String[] row = new String[8];
+				String[] row = new String[9];
 				for (int i = 0; i < 8; i++)
 					row[i] = rSet.getString(i + 1);
-
+				isbns.add(rSet.getString(1));
 				arr.add(row);
 			}
+			for (int i = 0; i < isbns.size(); i++) {
+
+				command = "select * from authors where isbn=" + isbns.get(i);
+				connector.run(command);
+				String authors = "";
+				while (connector.getResultSet().next())
+					authors += connector.getResultSet().getString(2) + " , ";
+				arr.get(i)[8] = authors;
+			}
+
 			result = arr.toArray(new String[arr.size()][]);
 
 		} catch (SQLException e) {
@@ -131,7 +181,7 @@ public class Operations implements IAdmin, IUser {
 	}
 
 	@Override
-	public boolean addNewBook(String[] bookInfo) {
+	public boolean addNewBook(String[] bookInfo, String[] authors) {
 
 		// insert the book into database
 		IConnector connector = Connector.getInstance();
@@ -144,12 +194,16 @@ public class Operations implements IAdmin, IUser {
 		if (connector.getUpdatedCount() < 0) // an error while inserting
 			return false;
 
+		// insert into authors table
+		for (int i = 0; i < authors.length; i++)
+			connector.run("insert into authors values('" + bookInfo[0] + "','"
+					+ authors[i] + "')");
 		return true;
 	}
 
 	@Override
 	public boolean editBookInfo(String[] attributes, String[] values,
-			String[] isbns) {
+			String isbn, String[] authors) {
 
 		if (attributes.length != values.length) {
 			System.out.println(
@@ -167,17 +221,23 @@ public class Operations implements IAdmin, IUser {
 				command += ", ";
 		}
 
-		command += " where";
 		// adding where condition
-		for (int i = 0; i < isbns.length; i++) {
-			command += " isbn=" + isbns[i];
-			if (i != isbns.length - 1)
-				command += " or";
-		}
+		command += " where isbn=" + isbn;
+
 		connector.run(command);
 
 		if (connector.getUpdatedCount() < 0) // error while updating
 			return false;
+
+		command = "delete from authors where isbn=" + isbn;
+		connector.run(command);
+
+		// insert new authors
+		for (int i = 0; i < authors.length; i++) {
+			command = "insert into authors values(" + isbn + ",'" + authors[i]
+					+ "')";
+			connector.run(command);
+		}
 
 		// success
 		return true;
@@ -237,5 +297,24 @@ public class Operations implements IAdmin, IUser {
 		}
 		// success
 		return true;
+	}
+
+	@Override
+	public boolean addPublisher(String name, String add, String[] phones) {
+		IConnector connector = Connector.getInstance();
+		connector.run(
+				"insert into publishers values('" + name + "','" + add + "')");
+
+		if (connector.getUpdatedCount() < 0)
+			return false;
+
+		for (int i = 0; i < phones.length; i++) {
+			connector.run("insert into publisher_phones values('" + name + "','"
+					+ phones[i] + "')");
+			if (connector.getUpdatedCount() < 0)
+				return false;
+		}
+		return true;
+
 	}
 }

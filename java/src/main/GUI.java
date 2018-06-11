@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,31 +9,25 @@ import javax.swing.border.EmptyBorder;
 
 import dbManager.Authenticator;
 import dbManager.IAuthenticator;
-import operations.IUser;
-import operations.Operations;
+import operations.ShoppingCart;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Rectangle;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.EventQueue;
+
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.Point;
 import javax.swing.JTextField;
-import java.awt.Button;
 import java.awt.event.ActionListener;
-import java.rmi.server.Operation;
 import java.awt.event.ActionEvent;
-import java.awt.TextField;
-import java.awt.Label;
 import java.awt.Panel;
 import javax.swing.JButton;
-import java.awt.LayoutManager;
 
 public class GUI extends JFrame {
 
@@ -47,6 +40,7 @@ public class GUI extends JFrame {
 	private JTextField textField_4;
 	private JTextField textField_5;
 	private JTextField textField_6;
+	private JTextField phonesTextFiled;
 
 	/**
 	 * Launch the application.
@@ -75,12 +69,12 @@ public class GUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+
 		JPanel panel = new JPanel(null);
 		panel.setPreferredSize(new Dimension(100, 150));
 		panel.setBackground(Color.BLUE);
 		contentPane.add(panel, BorderLayout.NORTH);
-		
+
 		JLabel lblNewLabel = new JLabel("Welcome to online bookstore ");
 		lblNewLabel.setBounds(new Rectangle(146, 35, 700, 61));
 		lblNewLabel.setLocation(new Point(350, 50));
@@ -88,25 +82,25 @@ public class GUI extends JFrame {
 		lblNewLabel.setFont(new Font("Calibri", Font.BOLD, 50));
 		lblNewLabel.setForeground(Color.WHITE);
 		panel.add(lblNewLabel , BorderLayout.CENTER);
-		
+
 		JPanel panel_1 = new JPanel(null);
 		panel_1.setBackground(Color.BLUE);
 		panel_1.setPreferredSize(new Dimension(1400, 150));
 		contentPane.add(panel_1, BorderLayout.SOUTH);
-		
+
 		JPanel panel_2 = new JPanel(null);
-		panel_2.setFont(new Font("Calibri", Font.PLAIN, 20));
+		panel_2.setFont(new Font("Calibri", Font.PLAIN, 15));
 		panel_2.setPreferredSize(new Dimension(700, 150));
 		panel_2.setBackground(Color.WHITE);
 		contentPane.add(panel_2, BorderLayout.WEST);
-		
+
 		JLabel label = new JLabel("Sign In\r\n");
 		label.setLocation(new Point(20, 20));
 		label.setBounds(new Rectangle(60, 25, 118, 50));
 		label.setFont(new Font("Calibri", Font.PLAIN, 40));
 		label.setBackground(Color.BLACK);
 		panel_2.add(label);
-		
+
 		JLabel lblEmail = new JLabel("Email");
 		lblEmail.setLocation(new Point(23, 86));
 		lblEmail.setHorizontalAlignment(SwingConstants.CENTER);
@@ -135,25 +129,24 @@ public class GUI extends JFrame {
 		textField_1.setColumns(10);
 		textField_1.setBounds(44, 141, 206, 30);
 		panel_2.add(textField_1);
-		
+
 		Panel panel_3 = new Panel(null);
 		panel_3.setPreferredSize(new Dimension(700, 150));
 		contentPane.add(panel_3, BorderLayout.CENTER);
-		
+
 		JButton btnNewButton_1 = new JButton("Log In\r\n");
-		btnNewButton_1.setFont(new Font("Calibri", Font.BOLD, 20));
+		btnNewButton_1.setFont(new Font("Calibri", Font.BOLD, 15));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//signIn(textField_1.getText(), textField.getText());
-				Admin u = new Admin(textField_1.getText());
+				User s = new User(textField_1.getText());
 				setVisible(false);
-				u.setVisible(true);
-				
+				s.setVisible(true);
 			}
 		});
-		btnNewButton_1.setBounds(340, 325, 155, 36);
+		btnNewButton_1.setBounds(340, 339, 155, 36);
 		panel_2.add(btnNewButton_1);
-		
+
 		JLabel lblSignUp = new JLabel("Sign Up\r\n\r\n");
 		lblSignUp.setLocation(new Point(20, 20));
 		lblSignUp.setFont(new Font("Calibri", Font.PLAIN, 40));
@@ -161,7 +154,7 @@ public class GUI extends JFrame {
 		lblSignUp.setBackground(Color.BLACK);
 		lblSignUp.setBounds(64, 21, 131, 50);
 		panel_3.add(lblSignUp);
-		
+
 		JLabel label_1 = new JLabel("Email");
 		label_1.setSize(new Dimension(84, 30));
 		label_1.setPreferredSize(new Dimension(50, 20));
@@ -251,49 +244,95 @@ public class GUI extends JFrame {
 		textField_6.setColumns(10);
 		textField_6.setBounds(374, 276, 206, 30);
 		panel_3.add(textField_6);
-		
-		JButton btnNewButton = new JButton("SIgn Up\r\n");
+
+		JLabel phonesLabel = new JLabel("User Phones\r\n");
+		phonesLabel.setSize(new Dimension(84, 30));
+		phonesLabel.setPreferredSize(new Dimension(50, 20));
+		phonesLabel.setLocation(new Point(23, 86));
+		phonesLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		phonesLabel.setFont(new Font("Calibri", Font.PLAIN, 20));
+		phonesLabel.setAlignmentX(0.5f);
+		phonesLabel.setBounds(94, 317, 116, 30);
+		panel_3.add(phonesLabel);
+
+		phonesTextFiled = new JTextField();
+		phonesTextFiled.setColumns(10);
+		phonesTextFiled.setBounds(84, 345, 206, 30);
+		panel_3.add(phonesTextFiled);
+
+		JButton btnNewButton = new JButton("Sign Up\r\n");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] info = { textField_2.getText(), textField_3.getText(),passwordField.getText(), textField_4.getText(),textField_5.getText(), textField_6.getText() };
-				signUp(info);
+				String[] info = { textField_2.getText(), textField_3.getText(),
+						passwordField.getText(), textField_4.getText(),
+						textField_5.getText(), textField_6.getText() };
+				String[] phones;
+				String temp = phonesTextFiled.getText();
+				temp = temp.trim();
+				phones = temp.split(",");
+				System.out.println(phones[0]);
+				System.out.println(
+						temp + "* ******" + phones.length + "  ******");
+				signUp(info, phones);
 			}
 		});
-		btnNewButton.setFont(new Font("Calibri", Font.BOLD, 20));
-		btnNewButton.setBounds(463, 325, 155, 36);
+		btnNewButton.setFont(new Font("Calibri", Font.BOLD, 15));
+		btnNewButton.setBounds(463, 342, 155, 36);
 		panel_3.add(btnNewButton);
-		
-	}
-	
-	protected void signUp(String[] info) {
 
+	}
+
+	protected void signUp(String[] info, String[] phones) {
+
+		if (phones[0].length() == 0) {
+			System.out.println("Empty phone! Please enter at least 1 phone.");
+			JOptionPane.showMessageDialog(new JFrame(),
+					"Please enter at least 1 phone.", "Dialog",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		for (String string : info) {
 			if (string.isEmpty()) {
-				JOptionPane.showMessageDialog(new JFrame(),"You must fill all fields!", "Dialog",JOptionPane.ERROR_MESSAGE);
+				System.out.println("Empty field!");
+				JOptionPane.showMessageDialog(new JFrame(),
+						"You must fill all fields!", "Dialog",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 		}
 
 		IAuthenticator Authenticator = new Authenticator();
-		boolean success = Authenticator.addNewUser(info);
+		boolean success = Authenticator.addNewUser(info, phones);
 		String email = info[0];
 		if (success) {
+			System.out.println(email + " has been successfully signed up.");
+			JOptionPane.showMessageDialog(new JFrame(),
+					email + " has been successfully signed up.", "Dialog",
+					JOptionPane.INFORMATION_MESSAGE);
 			User u = new User(email);
 			u.setVisible(true);
 			setVisible(false);
-		} else
-			JOptionPane.showMessageDialog(new JFrame(), "Failure in signing up user : " + email, "Dialog",JOptionPane.ERROR_MESSAGE);
+		} else {
+			System.out.println("Failure in signing up user : " + email);
+			JOptionPane.showMessageDialog(new JFrame(),
+					email + "Error in signing up, email already exists! ", "Dialog",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	protected void signIn(String email, String password) {
 		IAuthenticator Authenticator = new Authenticator();
 		int type = Authenticator.authenticate(email, password);
 		if (type == 1) {
+			System.out.println(
+					email + " has been logged in successfully as admin!");
 			Admin u = new Admin(email);
 			u.setVisible(true);
 			setVisible(false);
 		} else if (type == 0) {
+			System.out.println(
+					email + " has been logged in successfully as user!");
 			User u = new User(email);
 			u.setVisible(true);
 			setVisible(false);
@@ -308,5 +347,6 @@ public class GUI extends JFrame {
 			JOptionPane.showMessageDialog(new JFrame(), message, "Dialog",
 					JOptionPane.ERROR_MESSAGE);
 		}
+
 	}
 }

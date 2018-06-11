@@ -27,7 +27,8 @@ public interface IUser {
 	 *            , values with the same length of attributes
 	 * @return true if updated successfully, false if not
 	 */
-	boolean editUserInfo(String email, String[] attributes, String[] values);
+	boolean editUserInfo(String email, String[] attributes, String[] values,
+			String[] phonesArr);
 
 	/**
 	 * 
