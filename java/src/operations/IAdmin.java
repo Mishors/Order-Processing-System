@@ -55,8 +55,8 @@ public interface IAdmin extends IUser {
 	 *            of pulbisher
 	 * @param phones
 	 *            of publisher
-	 * @return true if successfully added
+	 * @return 1 if successfully added, -2 if problem in phones, -1 if problem in other info
 	 */
-	public boolean addPublisher(String name, String add, String[] phones);
+	public int addPublisher(String name, String add, String[] phones);
 
 }

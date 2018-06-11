@@ -4,6 +4,7 @@
 package dbManager;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author yousef
@@ -22,9 +23,9 @@ public interface IConnector {
 	 * 
 	 * @param takes
 	 *            a sql command as string
-	 * @return true if the command was select and executed successfully
+	 * @throws SQLException 
 	 */
-	public boolean run(String command);
+	public void run(String command) throws SQLException;
 
 	/**
 	 * close connection and statement

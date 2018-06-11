@@ -299,9 +299,9 @@ public class WelcomeWindow extends JFrame {
 		}
 
 		IAuthenticator Authenticator = new Authenticator();
-		boolean success = Authenticator.addNewUser(info, phones);
+		int success = Authenticator.addNewUser(info, phones);
 		String email = info[0];
-		if (success) {
+		if (success == 1) {
 			System.out.println(email + " has been successfully signed up.");
 			JOptionPane.showMessageDialog(new JFrame(),
 					email + " has been successfully signed up.", "Dialog",
@@ -309,11 +309,20 @@ public class WelcomeWindow extends JFrame {
 			User u = new User(email);
 			u.setVisible(true);
 			setVisible(false);
-		} else {
+		} else if (success == -1) {
 			System.out.println("Failure in signing up user : " + email);
 			JOptionPane.showMessageDialog(new JFrame(),
-					email + "Error in signing up, email already exists! ", "Dialog",
+					email + "Error in signing up, email already exists! ",
+					"Dialog", JOptionPane.ERROR_MESSAGE);
+		} else if (success == -2) {
+			System.out.println("Failure in signing up user : " + email);
+			JOptionPane.showMessageDialog(new JFrame(), email
+					+ "Error in signing up, Phone numbers must be digits only"
+					+ " separated by ',' ! ", "Dialog",
 					JOptionPane.ERROR_MESSAGE);
+		} else {
+			System.out.println(
+					"It shouldn't reach hear in code ! , program fatal error!!");
 		}
 	}
 

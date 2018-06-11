@@ -25,7 +25,7 @@ public class TestBackEnd {
 
 			System.out.println(
 					"------------test selecting all books-----------------");
-			System.out.println(connector.run("select * from books"));
+			connector.run("select * from books");
 			String[][] books = new String[7][7];
 			int counter = 0;
 			while (connector.getResultSet().next()) {

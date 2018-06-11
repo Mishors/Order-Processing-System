@@ -44,20 +44,10 @@ public class Connector implements IConnector {
 	}
 
 	@Override
-	public boolean run(String command) {
-		try {
+	public void run(String command) throws SQLException {
+
 			boolean result = statement.execute(command);
-			if (command.substring(0, 6).equals("select"))
-				return result;
-			// if not select query, and success return true
-			return true;
-		} catch (SQLException e) {
-			System.out.println("Error while executing query: ");
-			System.out.println("\"" + command + "\"");
-			e.printStackTrace();
-			// if fails
-			return false;
-		}
+			
 	}
 
 	@Override

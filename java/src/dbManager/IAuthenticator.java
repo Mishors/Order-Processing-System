@@ -25,10 +25,12 @@ public interface IAuthenticator {
 	 * the database
 	 * 
 	 * @param userInfo
-	 * @param user phones 
-	 * @return true if the user added successfully , false if not
+	 * @param user
+	 *            phones
+	 * @return 1 if success, -2 if fail due to phone numbers, -1 fail due to
+	 *         other info or fail transaction
 	 */
-	public boolean addNewUser(String[] userInfo, String[] phones);
+	public int addNewUser(String[] userInfo, String[] phones);
 
 	/**
 	 * hash the given password using MD5

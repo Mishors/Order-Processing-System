@@ -14,14 +14,15 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public String[] getUserInfo(String email) {
 		IConnector connector = Connector.getInstance();
-		boolean success = connector
-				.run("select * from users where email='" + email + "'");
-		if (!success) {
-			System.out
-					.println("Database getting information of user with email=!"
-							+ email);
-			return null;
+		try {
+			connector.run("select * from users where email='" + email + "'");
+		} catch (SQLException e1) {
+			System.out.println(
+					"Database getting information of user with email = " + email
+							+ " !");
+			e1.printStackTrace();
 		}
+
 		try {
 			boolean isUser = connector.getResultSet().first();
 			if (!isUser) { // if no user with this email in data
@@ -55,51 +56,74 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public boolean editUserInfo(String email, String[] attributes,
 			String[] values, String[] phones) {
+
+		// start transaction
+		IConnector connector = Connector.getInstance();
+		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
 		if (attributes.length != values.length) {
 			System.out.println(
 					"Error in editing user info, attributes and values lengths don't match");
 			return false;
 		}
 
-		IConnector connector = Connector.getInstance();
 		String command = "update users set ";
 		String newEmail = null;
 		// adding values in command
-		for (int i = 0; i < attributes.length - 1; i++) {
-			if (attributes[i] == "user_password") {
-				String hashedPass = Authenticator.getInstance()
-						.hashPass(values[i]);
-				command += attributes[i] + "='" + hashedPass + "', ";
-			} else {
-				command += attributes[i] + "='" + values[i] + "', ";
-				if (attributes[i] == "email")
-					newEmail = values[i];
+		if (attributes.length > 0) {
+			for (int i = 0; i < attributes.length - 1; i++) {
+				if (attributes[i] == "user_password") {
+					String hashedPass = Authenticator.getInstance()
+							.hashPass(values[i]);
+					command += attributes[i] + "='" + hashedPass + "', ";
+				} else {
+					command += attributes[i] + "='" + values[i] + "', ";
+					if (attributes[i] == "email")
+						newEmail = values[i];
+				}
 			}
-		}
-		if (attributes[attributes.length - 1] == "user_password") {
-			String hashedPass = Authenticator.getInstance()
-					.hashPass(values[attributes.length - 1]);
-			command += attributes[attributes.length - 1] + "='" + hashedPass
-					+ "'";
-		} else {
-			command += attributes[attributes.length - 1] + "='"
-					+ values[attributes.length - 1] + "'";
-			if (attributes[attributes.length - 1] == "email")
-				newEmail = values[attributes.length - 1];
-		}
+			if (attributes[attributes.length - 1] == "user_password") {
+				String hashedPass = Authenticator.getInstance()
+						.hashPass(values[attributes.length - 1]);
+				command += attributes[attributes.length - 1] + "='" + hashedPass
+						+ "'";
+			} else {
+				command += attributes[attributes.length - 1] + "='"
+						+ values[attributes.length - 1] + "'";
+				if (attributes.length > 0
+						&& attributes[attributes.length - 1] == "email")
+					newEmail = values[attributes.length - 1];
 
-		// adding where condition
-		command += " where email='" + email + "'";
+			}
+			// adding where condition
+			command += " where email='" + email + "'";
+			System.out.println(command);
+			try {
+				connector.run(command);
+			} catch (SQLException e) {
+				// error while updating
+				e.printStackTrace();
+				return false;
+			}
 
-		connector.run(command);
-		if (connector.getUpdatedCount() < 0) // error while updating
-			return false;
+		}
 
 		if (newEmail != null)
 			email = newEmail;
 
 		command = "delete from user_phones where email='" + email + "'";
-		connector.run(command);
+		try {
+			connector.run(command);
+		} catch (SQLException e) {
+			System.out.println("Error while excuting : " + command);
+			e.printStackTrace();
+			return false;
+		}
 		if (phones == null) // this mean he removed all his phones
 			return true;
 
@@ -107,7 +131,21 @@ public class Operations implements IAdmin, IUser {
 		for (int i = 0; i < phones.length; i++) {
 			command = "insert into user_phones values('" + email + "','"
 					+ phones[i] + "')";
-			connector.run(command);
+			try {
+				connector.run(command);
+			} catch (SQLException e) {
+				System.out.println("Error while excuting : " + command);
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		// commit transaction
+		try {
+			connector.run("commit;");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
 		}
 
 		// success
@@ -117,18 +155,29 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public String[][] searchForBooks(String attribute, Object value) {
 
-		ArrayList<String> authors = new ArrayList<>();
 		String command = "";
 		if (attribute == "authors") {
 			command = "select * from books where isbn in (select isbn "
 					+ "from authors where author='" + value + "')";
+
 		} else {
 			command = "select * from books where ";
-			command += attribute + "='" + value.toString() + "'";
+			command += attribute;
+			if (attribute == "price") {
+				command += "<='";
+			} else {
+				command += "='";
+			}
+			command += value.toString() + "'";
 		}
 
 		IConnector connector = Connector.getInstance();
-		connector.run(command);
+		try {
+			connector.run(command);
+		} catch (SQLException e) {
+			System.out.println("Error while excuting : " + command);
+			e.printStackTrace();
+		}
 
 		ResultSet rSet = connector.getResultSet();
 
@@ -138,7 +187,13 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public String[][] searchForBooksAdvanced(String condition) {
 		IConnector connector = Connector.getInstance();
-		connector.run("select * from books where " + condition);
+		String command = "select * from books where " + condition;
+		try {
+			connector.run(command);
+		} catch (SQLException e) {
+			System.out.println("Error while excuting : " + command);
+			e.printStackTrace();
+		}
 
 		ResultSet rSet = connector.getResultSet();
 		return convertResultSet(rSet);
@@ -183,21 +238,48 @@ public class Operations implements IAdmin, IUser {
 	@Override
 	public boolean addNewBook(String[] bookInfo, String[] authors) {
 
-		// insert the book into database
+		// start transaction
 		IConnector connector = Connector.getInstance();
+		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
+		// insert the book into database
 		String values = "";
 		for (int i = 0; i < bookInfo.length - 1; i++)
 			values += "'" + bookInfo[i] + "', ";
 		values += "'" + bookInfo[bookInfo.length - 1] + "'";
-		connector.run("insert into books values(" + values + ")");
+		try {
+			connector.run("insert into books values(" + values + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 
 		if (connector.getUpdatedCount() < 0) // an error while inserting
 			return false;
 
 		// insert into authors table
 		for (int i = 0; i < authors.length; i++)
-			connector.run("insert into authors values('" + bookInfo[0] + "','"
-					+ authors[i] + "')");
+			try {
+				connector.run("insert into authors values('" + bookInfo[0]
+						+ "','" + authors[i] + "')");
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+
+		// commit transaction
+		try {
+			connector.run("commit;");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
 		return true;
 	}
 
@@ -211,7 +293,15 @@ public class Operations implements IAdmin, IUser {
 			return false;
 		}
 
+		// start transaction
 		IConnector connector = Connector.getInstance();
+		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
 		String command = "update books set ";
 
 		// adding values in command
@@ -224,19 +314,42 @@ public class Operations implements IAdmin, IUser {
 		// adding where condition
 		command += " where isbn=" + isbn;
 
-		connector.run(command);
-
-		if (connector.getUpdatedCount() < 0) // error while updating
+		try {
+			connector.run(command);
+		} catch (SQLException e) {
+			System.out.println("Error while excuting : " + command);
+			e.printStackTrace();
 			return false;
+		}
 
 		command = "delete from authors where isbn=" + isbn;
-		connector.run(command);
+		try {
+			connector.run(command);
+		} catch (SQLException e) {
+			System.out.println("Error while excuting : " + command);
+			e.printStackTrace();
+			return false;
+		}
 
 		// insert new authors
 		for (int i = 0; i < authors.length; i++) {
 			command = "insert into authors values(" + isbn + ",'" + authors[i]
 					+ "')";
-			connector.run(command);
+			try {
+				connector.run(command);
+			} catch (SQLException e) {
+				System.out.println("Error while excuting : " + command);
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		// commit transaction
+		try {
+			connector.run("commit;");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
 		}
 
 		// success
@@ -245,9 +358,18 @@ public class Operations implements IAdmin, IUser {
 
 	@Override
 	public boolean orderBook(String isbn, String noOfCopies) {
+
+		// start transaction
 		IConnector connector = Connector.getInstance();
-		connector.run("select * from store_orders where isbn = " + isbn);
 		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
+		try {
+			connector.run("select * from store_orders where isbn = " + isbn);
 			if (connector.getResultSet().first()) {
 				connector.run(
 						"update store_orders set no_of_copies = no_of_copies + "
@@ -260,6 +382,15 @@ public class Operations implements IAdmin, IUser {
 				System.out.println("Error while inserting order!");
 				return false;
 			}
+
+			// commit transaction
+			try {
+				connector.run("commit;");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+				return false;
+			}
+
 			// success
 			return true;
 		} catch (SQLException e) {
@@ -272,8 +403,23 @@ public class Operations implements IAdmin, IUser {
 
 	@Override
 	public boolean confirmOrder(String isbn) {
+
+		// start transaction
 		IConnector connector = Connector.getInstance();
-		connector.run("delete from store_orders where isbn = " + isbn);
+		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
+		try {
+			connector.run("delete from store_orders where isbn = " + isbn);
+		} catch (SQLException e) {
+			System.out.println("Error in confirming order");
+			e.printStackTrace();
+			return false;
+		}
 
 		if (connector.getUpdatedCount() < 1) { // if failed
 			System.out.println(
@@ -281,6 +427,15 @@ public class Operations implements IAdmin, IUser {
 							+ " !");
 			return false;
 		}
+
+		// commit transaction
+		try {
+			connector.run("commit;");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
 		// success
 		return true;
 	}
@@ -288,33 +443,47 @@ public class Operations implements IAdmin, IUser {
 	public boolean promoteCustomer(String customerEmail) {
 
 		IConnector connector = Connector.getInstance();
-		connector.run("insert into managers values('" + customerEmail + "')");
+		try {
+			connector.run(
+					"insert into managers values('" + customerEmail + "')");
+		} catch (SQLException e) {
 
-		if (connector.getUpdatedCount() < 1) { // if failed
 			System.out.println(
 					"Error while promoting customer: " + customerEmail + " !");
+			e.printStackTrace();
 			return false;
 		}
+
 		// success
 		return true;
 	}
 
 	@Override
-	public boolean addPublisher(String name, String add, String[] phones) {
+	public int addPublisher(String name, String add, String[] phones) {
 		IConnector connector = Connector.getInstance();
-		connector.run(
-				"insert into publishers values('" + name + "','" + add + "')");
-
-		if (connector.getUpdatedCount() < 0)
-			return false;
+		try {
+			connector.run("insert into publishers values('" + name + "','" + add
+					+ "')");
+		} catch (SQLException e) {
+			System.out.println(
+					"Error in add publisher in publisher name may be already exist "
+							+ "or address may be null !");
+			e.printStackTrace();
+			return -1;
+		}
 
 		for (int i = 0; i < phones.length; i++) {
-			connector.run("insert into publisher_phones values('" + name + "','"
-					+ phones[i] + "')");
-			if (connector.getUpdatedCount() < 0)
-				return false;
+			try {
+				connector.run("insert into publisher_phones values('" + name
+						+ "','" + phones[i] + "')");
+			} catch (SQLException e) {
+				System.out.println("Error in add publisher in phnes numbers !");
+				e.printStackTrace();
+				return -2;
+			}
+
 		}
-		return true;
+		return 1;
 
 	}
 }

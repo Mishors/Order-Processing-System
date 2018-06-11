@@ -45,19 +45,27 @@ for each row begin
 	update books set books.no_of_copies = books.no_of_copies + old.no_of_copies where books.isbn = old.isbn;
 end;;
 
--- delimiter ;;
--- drop trigger store_orders_deletion_trigger;;
--- -- when delete an store order, increase the no_of_copies in the books table
--- create trigger 	store_orders_deletion_trigger 
--- on store_orders 
--- for delete as
--- begin
--- 	declare no_of_copies_ordered int;
---     declare isbn_ordered int;
---     select store_orders.no_of_copies into no_of_copies_ordered from deleted;
---     select isbn into isbn_ordered from deleted;
---     update books set no_of_copies=no_of_copies_ordered where isbn=isbn_ordered;
--- end;;
+drop trigger if exists check_phones_is_numbers;;
+-- when insert new rows, check no_of_copies with the threshold
+create trigger 	check_phones_is_numbers
+before insert on user_phones
+for each row begin
+	if(not new.phone REGEXP '^[0-9]+$') then
+		 signal sqlstate '45000';
+    end if;
+end;;
+
+DELIMITER ;;
+drop trigger if exists check_phones_is_numbers_for_publishers;;
+-- when insert new rows, check no_of_copies with the threshold
+create trigger 	check_phones_is_numbers_for_publishers
+before insert on publisher_phones
+for each row begin
+	if(not new.phone REGEXP '^[0-9]+$') then
+		 signal sqlstate '45000';
+    end if;
+end;;
+
 
 
 -- Searching procedures which will be called in the front end to support the user with the required information

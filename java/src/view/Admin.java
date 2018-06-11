@@ -10,6 +10,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -24,6 +28,13 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import dbManager.Connector;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 import operations.IAdmin;
 import operations.IUser;
 import operations.Operations;
@@ -321,11 +332,20 @@ public class Admin extends JFrame {
 							i++;
 						}
 						IAdmin u = new Operations();
-						boolean success = u.editUserInfo(email, att, data);
-						if (!success)
+						int success = u.editUserInfo(email, att, data);
+						if (success == -2)
 							JOptionPane.showMessageDialog(new JFrame(),
-									"Failed on editing the admin info",
+									"Failed on editing the admin info, provide numeric phones only",
 									"Dialog", JOptionPane.ERROR_MESSAGE);
+						else if (success == -1) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Failed on editing the admin info, email may be already exist",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Successfully been edited.", "Dialog",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm.setBounds(450, 315, 89, 23);
@@ -1037,6 +1057,38 @@ public class Admin extends JFrame {
 		JButton button_9 = new JButton("OK");
 		button_9.setBounds(661, 43, 89, 23);
 		panel_2.add(button_9);
+		button_9.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				Connection con = null;
+				try {
+					if (con == null)
+						con = DriverManager.getConnection(
+								"jdbc:mysql://localhost:3306/book_store?useSSL=false",
+								"root", "admin");
+				} catch (Exception ex) {
+					// Logger.getLogger(main.class.getName()).log(Level.SEVERE,null,ex);
+				}
+
+				String myreport = "Month_Sales_report.jrxml";
+
+				try {
+					JasperReport jasper = JasperCompileManager
+							.compileReport(myreport);
+					JasperPrint jasperPrint = JasperFillManager
+							.fillReport(jasper, null, con);
+					JasperViewer jv = new JasperViewer(jasperPrint, false);
+					jv.viewReport(jasperPrint, false);
+
+				} catch (JRException exc) {
+					Logger.getLogger(Admin.class.getName()).log(Level.SEVERE,
+							null, exc);
+
+				}
+			}
+		});
 
 		JLabel lblTopFiveCustomers = new JLabel("Top five customers");
 		lblTopFiveCustomers.setFont(new Font("Calibri", Font.PLAIN, 15));
@@ -1046,6 +1098,38 @@ public class Admin extends JFrame {
 		JButton button_10 = new JButton("OK");
 		button_10.setBounds(661, 77, 89, 23);
 		panel_2.add(button_10);
+		button_10.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Connection con = null;
+				try {
+					if (con == null)
+						con = DriverManager.getConnection(
+								"jdbc:mysql://localhost:3306/book_store?useSSL=false",
+								"root", "admin");
+				} catch (Exception ex) {
+					// Logger.getLogger(main.class.getName()).log(Level.SEVERE,null,ex);
+				}
+
+				String myreport = "Top Customers.jrxml";
+
+				try {
+					JasperReport jasper = JasperCompileManager
+							.compileReport(myreport);
+					JasperPrint jasperPrint = JasperFillManager
+							.fillReport(jasper, null, con);
+					JasperViewer jv = new JasperViewer(jasperPrint, false);
+					jv.viewReport(jasperPrint, false);
+
+				} catch (JRException exc) {
+					Logger.getLogger(Admin.class.getName()).log(Level.SEVERE,
+							null, exc);
+
+				}
+			}
+		});
 
 		JLabel lblTopTenSold = new JLabel("Top ten sold books");
 		lblTopTenSold.setFont(new Font("Calibri", Font.PLAIN, 15));
@@ -1055,6 +1139,37 @@ public class Admin extends JFrame {
 		JButton button_11 = new JButton("OK");
 		button_11.setBounds(661, 111, 89, 23);
 		panel_2.add(button_11);
+		button_11.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Connection con = null;
+				try {
+					if (con == null)
+						con = DriverManager.getConnection(
+								"jdbc:mysql://localhost:3306/book_store?useSSL=false",
+								"root", "admin");
+				} catch (Exception ex) {
+					// Logger.getLogger(main.class.getName()).log(Level.SEVERE,null,ex);
+				}
+
+				String myreport = "Top Selling Books.jrxml";
+
+				try {
+					JasperReport jasper = JasperCompileManager
+							.compileReport(myreport);
+					JasperPrint jasperPrint = JasperFillManager
+							.fillReport(jasper, null, con);
+					JasperViewer jv = new JasperViewer(jasperPrint, false);
+					jv.viewReport(jasperPrint, false);
+				} catch (JRException exc) {
+					Logger.getLogger(Admin.class.getName()).log(Level.SEVERE,
+							null, exc);
+
+				}
+			}
+		});
 
 		JButton btnLogOut = new JButton("Log Out\r\n");
 		btnLogOut.addActionListener(new ActionListener() {

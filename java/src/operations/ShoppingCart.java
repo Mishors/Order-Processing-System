@@ -1,5 +1,6 @@
 package operations;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,11 +92,17 @@ public class ShoppingCart implements IShoppingCart {
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String dateFormatted = sdf.format(date);
-			connector.run(
-					"insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) "
-							+ "values('" + book[0] + "','" + activeUserEmail
-							+ "','" + book[book.length - 1] + "','"
-							+ dateFormatted + "')");
+			try {
+				connector.run(
+						"insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) "
+								+ "values('" + book[0] + "','" + activeUserEmail
+								+ "','" + book[book.length - 1] + "','"
+								+ dateFormatted + "')");
+			} catch (SQLException e) {
+				System.out.println("Error in checking out orders");
+				e.printStackTrace();
+				return false;
+			}
 		}
 		this.emptyCart();
 		return true;

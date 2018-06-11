@@ -21,15 +21,10 @@ public class Authenticator implements IAuthenticator {
 	@Override
 	public int authenticate(String email, String password) {
 
-		IConnector connector = Connector.getInstance();
-		boolean success = connector
-				.run("select * from users where " + "email = '" + email + "'");
-		if (!success) {
-			System.out.println(
-					"Database access error while authenticating an user!");
-			return -1;
-		}
 		try {
+			IConnector connector = Connector.getInstance();
+			connector.run(
+					"select * from users where " + "email = '" + email + "'");
 			boolean isUser = connector.getResultSet().first();
 			// check for the given user name
 			if (!isUser) { // no result from sql select
@@ -64,29 +59,55 @@ public class Authenticator implements IAuthenticator {
 	}
 
 	@Override
-	public boolean addNewUser(String[] userInfo, String[] phones) {
+	public int addNewUser(String[] userInfo, String[] phones) {
 
 		// hash the given user password
 		userInfo[2] = hashPass(userInfo[2]);
 
-		// insert the user into database
+		// start transaction
 		IConnector connector = Connector.getInstance();
+		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return -1;
+		}
+
+		// insert the user into database
 		String values = "";
 		for (int i = 0; i < userInfo.length - 1; i++)
 			values += "'" + userInfo[i] + "', ";
 		values += "'" + userInfo[userInfo.length - 1] + "'";
-		connector.run("insert into users values(" + values + ")");
+		try {
+			connector.run("insert into users values(" + values + ")");
+		} catch (SQLException e) { // an error while inserting info
+			e.printStackTrace();
+			return -1;
+		}
 
-		if (connector.getUpdatedCount() < 0) // an error while inserting
-			return false;
 		String command = "";
 		String email = userInfo[0];
 		for (int i = 0; i < phones.length; i++) {
 			command = "insert into user_phones values('" + email + "','"
 					+ phones[i] + "')";
-			connector.run(command);
+			try {
+				connector.run(command);
+			} catch (SQLException e) { // an error while inserting phones
+				e.printStackTrace();
+				return -2;
+			}
 		}
-		return true;
+
+		// commit transaction
+		try {
+			connector.run("commit;");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return -1;
+		}
+
+		// success
+		return 1;
 	}
 
 	@Override
@@ -113,13 +134,30 @@ public class Authenticator implements IAuthenticator {
 
 	public boolean setAsAdmin(String email) {
 
+		// start transaction
 		IConnector connector = Connector.getInstance();
-		boolean success = connector
-				.run("insert into managers values('" + email + "')");
-		if (!success) {
-			System.out.println("Database  error while setting user as admin!");
+		try {
+			connector.run("start transaction");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 			return false;
 		}
+		try {
+			connector.run("insert into managers values('" + email + "')");
+		} catch (SQLException e) {
+			System.out.println("Database  error while setting user as admin!");
+			e.printStackTrace();
+			return false;
+		}
+
+		// commit transaction
+		try {
+			connector.run("commit;");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
 		return true;
 	}
 
