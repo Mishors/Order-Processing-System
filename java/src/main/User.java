@@ -11,29 +11,23 @@ import java.awt.Rectangle;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JSplitPane;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
 import operations.IUser;
 import operations.Operations;
-import javax.swing.border.CompoundBorder;
 import javax.swing.JRadioButton;
 
 public class User extends JFrame {
 
 	private JPanel contentPane;
-	private JTable table;
-	private JTable table_1;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -190,15 +184,15 @@ public class User extends JFrame {
 				panel_3.add(label);
 				label.setFont(new Font("Calibri", Font.PLAIN, 20));
 				
-				/*IUser user = new Operations();
-				String[] data = null;
+				IUser user = new Operations();
+				String[] data;
 				data = user.getUserInfo(email);
 				textField.setText(data[0]);
 				textField_1.setText(data[1]);
 				textField_2.setText(data[2]);
 				textField_3.setText(data[3]);
 				textField_4.setText(data[4]);
-				textField_5.setText(data[5]);*/
+				textField_5.setText(data[5]);
 			}
 		});
 		btnOk.setBounds(289, 66, 89, 23);
@@ -322,7 +316,9 @@ public class User extends JFrame {
 							i++;
 						}
 						IUser u = new Operations();
-						u.editUserInfo(email, att, data);
+						boolean success = u.editUserInfo(email, att, data);
+						if(!success)
+							JOptionPane.showMessageDialog(new JFrame(), "Failed on editing the user info", "Dialog",JOptionPane.ERROR_MESSAGE);
 					}
 				});
 				btnConfirm.setBounds(450, 315, 89, 23);
@@ -342,6 +338,11 @@ public class User extends JFrame {
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
                 panel_3.removeAll();
+                
+                JLabel label = new JLabel(email);
+        		label.setBounds(350, 363, 250, 23);
+        		panel_3.add(label);
+        		label.setFont(new Font("Calibri", Font.PLAIN, 20));
 				
 				JLabel lblGetUserInfo = new JLabel("Search for book");
 				lblGetUserInfo.setFont(new Font("Calibri", Font.BOLD, 25));
@@ -449,6 +450,37 @@ public class User extends JFrame {
 				JButton btnConfirm_1 = new JButton("Confirm");
 				btnConfirm_1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						String value = null, attribute = group.getSelection().getActionCommand();
+						switch (attribute) {
+						case "isbn":
+							value = textField.getText();
+							break;
+						case "title":
+							value = textField_6.getText();
+							break;
+						case "publisher_name":
+							value = textField_7.getText();
+							break;
+						case "publishing_year":
+							value = textField_8.getText();
+							break;
+						case "price":
+							value = textField_9.getText();
+							break;
+						case "category":
+							value = textField_10.getText();
+							break;
+						case "threshold":
+							value = textField_11.getText();
+							break;
+						case "no_of_copies":
+							value = textField_12.getText();
+							break;
+						default:
+							JOptionPane.showMessageDialog(new JFrame(), "Unexpected Error in radio buttons!", "Dialog",JOptionPane.ERROR_MESSAGE);
+						}
+						IUser user = new Operations();
+						String[][] result = user.searchForBooks(attribute,value);
 						
 					}
 				});
@@ -466,6 +498,54 @@ public class User extends JFrame {
 		panel_2.add(lblSearchForBook_1);
 		
 		JButton button_2 = new JButton("OK");
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				panel_3.removeAll();
+				
+				JLabel label = new JLabel(email);
+				label.setBounds(350, 363, 250, 23);
+				panel_3.add(label);
+				label.setFont(new Font("Calibri", Font.PLAIN, 20));
+				
+				JLabel lblYouCanUse = new JLabel("You can use and , or and brackets\r\n");
+				lblYouCanUse.setFont(new Font("Calibri", Font.BOLD, 20));
+				lblYouCanUse.setBounds(44, 51, 478, 31);
+				panel_3.add(lblYouCanUse);
+				
+				JLabel lblForExample = new JLabel("For example :");
+				lblForExample.setFont(new Font("Calibri", Font.BOLD, 20));
+				lblForExample.setBounds(44, 86, 478, 31);
+				panel_3.add(lblForExample);
+				
+				JLabel lblisbnAndTitlec = new JLabel("(Isbn=2 and title=\"C Programming\") or Price<50");
+				lblisbnAndTitlec.setFont(new Font("Calibri", Font.BOLD, 20));
+				lblisbnAndTitlec.setBounds(44, 119, 478, 31);
+				panel_3.add(lblisbnAndTitlec);
+				
+				JLabel lblCondition = new JLabel("Condition");
+				lblCondition.setFont(new Font("Calibri", Font.BOLD, 20));
+				lblCondition.setBounds(44, 217, 94, 31);
+				panel_3.add(lblCondition);
+				
+				textField_13 = new JTextField();
+				textField_13.setBounds(148, 218, 452, 31);
+				panel_3.add(textField_13);
+				textField_13.setColumns(10);
+				
+				JButton btnConfirm_2 = new JButton("Confirm");
+				btnConfirm_2.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(textField_13.getText() != "")
+						{
+							IUser u = new Operations();
+							String[][] result = u.searchForBooksAdvanced(textField_13.getText());
+						}
+					}
+				});
+				btnConfirm_2.setBounds(469, 329, 89, 23);
+				panel_3.add(btnConfirm_2);
+			}
+		});
 		button_2.setBounds(289, 282, 89, 23);
 		panel_2.add(button_2);
 		
@@ -484,7 +564,7 @@ public class User extends JFrame {
 		btnShoppingCart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
-				shoppingCart s = new shoppingCart(email);
+				shoppingCart s = new shoppingCart(email , false);
 				s.setVisible(true);
 			}
 		});
@@ -495,51 +575,5 @@ public class User extends JFrame {
 		label.setBounds(350, 363, 250, 23);
 		panel_3.add(label);
 		label.setFont(new Font("Calibri", Font.PLAIN, 20));
-		
-		JLabel lblGetUserInfo = new JLabel("Edit info");
-		lblGetUserInfo.setFont(new Font("Calibri", Font.BOLD, 25));
-		lblGetUserInfo.setBounds(20, 11, 182, 31);
-		panel_3.add(lblGetUserInfo);
-		
-		JLabel lblYouCanUse = new JLabel("You can use and , or and brackets\r\n");
-		lblYouCanUse.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblYouCanUse.setBounds(44, 51, 478, 31);
-		panel_3.add(lblYouCanUse);
-		
-		JLabel lblForExample = new JLabel("For example :");
-		lblForExample.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblForExample.setBounds(44, 86, 478, 31);
-		panel_3.add(lblForExample);
-		
-		JLabel lblisbnAndTitlec = new JLabel("(Isbn=2 and title=\"C Programming\") or Price<50");
-		lblisbnAndTitlec.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblisbnAndTitlec.setBounds(44, 119, 478, 31);
-		panel_3.add(lblisbnAndTitlec);
-		
-		JLabel lblCondition = new JLabel("Condition");
-		lblCondition.setFont(new Font("Calibri", Font.BOLD, 20));
-		lblCondition.setBounds(44, 217, 94, 31);
-		panel_3.add(lblCondition);
-		
-		textField_13 = new JTextField();
-		textField_13.setBounds(148, 218, 452, 31);
-		panel_3.add(textField_13);
-		textField_13.setColumns(10);
-		
-		JButton btnConfirm_2 = new JButton("Confirm");
-		btnConfirm_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(textField_13.getText() != "")
-				{
-					IUser u = new Operations();
-					u.searchForBooksAdvanced(textField_13.getText());
-				}
-			}
-		});
-		btnConfirm_2.setBounds(469, 329, 89, 23);
-		panel_3.add(btnConfirm_2);
-		
-		
-		
 	}
 }

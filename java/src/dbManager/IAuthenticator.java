@@ -14,7 +14,8 @@ public interface IAuthenticator {
 	 * in the user if valid
 	 * 
 	 * @return 0 if the authentication pass as user, 1 if manager and -1 if not
-	 *         authorized
+	 *         authorized emial, -2 if not valid password and -3 if data access
+	 *         fail
 	 */
 	public int authenticate(String email, String password);
 
@@ -36,9 +37,10 @@ public interface IAuthenticator {
 	 * @return
 	 */
 	public String hashPass(String pass);
-	
+
 	/**
 	 * setting an user as admin to have admin previleges
+	 * 
 	 * @param email
 	 * @return true if success, false if any error happened
 	 */

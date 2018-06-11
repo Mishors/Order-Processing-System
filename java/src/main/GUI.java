@@ -20,6 +20,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -143,33 +144,11 @@ public class GUI extends JFrame {
 		btnNewButton_1.setFont(new Font("Calibri", Font.BOLD, 20));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				while(textField.getText() == "" || textField_1.getText() == "");
-				User u = new User(textField_1.getText());
-				u.setVisible(true);
+				//signIn(textField_1.getText(), textField.getText());
+				Admin u = new Admin(textField_1.getText());
 				setVisible(false);
+				u.setVisible(true);
 				
-				/*panel_3.setVisible(false);
-				panel_2.setVisible(false);
-				
-				JPanel panel_4 = new JPanel(null);
-				panel_4.setFont(new Font("Calibri", Font.PLAIN, 20));
-				panel_4.setPreferredSize(new Dimension(1400, 150));
-				contentPane.add(panel_4, BorderLayout.CENTER);*/
-				//IAuthenticator Authenticator = new Authenticator();
-				//int choice = Authenticator.authenticate(textField_1.getText(), textField.getText());
-				/*if(choice == 0){
-					panel_1.setVisible(false);
-					panel_2.setVisible(false);
-					
-				}
-				else if(choice == 1){
-					panel_1.setVisible(false);
-					panel_2.setVisible(false);
-					
-				}
-				else{
-					
-				}*/
 			}
 		});
 		btnNewButton_1.setBounds(340, 325, 155, 36);
@@ -276,15 +255,58 @@ public class GUI extends JFrame {
 		JButton btnNewButton = new JButton("SIgn Up\r\n");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				while(textField_2.getText() == "" || textField_3.getText() == "" || textField_4.getText() == "" || textField_5.getText() == "" || textField_6.getText() == "" || passwordField.getText() == "");
-				String [] info = { textField_2.getText() , textField_3.getText() , passwordField.getText() , textField_4.getText() , textField_5.getText() , textField_6.getText()};
-				IAuthenticator Authenticator = new Authenticator();
-				Authenticator.addNewUser(info);
+				String[] info = { textField_2.getText(), textField_3.getText(),passwordField.getText(), textField_4.getText(),textField_5.getText(), textField_6.getText() };
+				signUp(info);
 			}
 		});
 		btnNewButton.setFont(new Font("Calibri", Font.BOLD, 20));
 		btnNewButton.setBounds(463, 325, 155, 36);
 		panel_3.add(btnNewButton);
 		
+	}
+	
+	protected void signUp(String[] info) {
+
+		for (String string : info) {
+			if (string.isEmpty()) {
+				JOptionPane.showMessageDialog(new JFrame(),"You must fill all fields!", "Dialog",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+		}
+
+		IAuthenticator Authenticator = new Authenticator();
+		boolean success = Authenticator.addNewUser(info);
+		String email = info[0];
+		if (success) {
+			User u = new User(email);
+			u.setVisible(true);
+			setVisible(false);
+		} else
+			JOptionPane.showMessageDialog(new JFrame(), "Failure in signing up user : " + email, "Dialog",JOptionPane.ERROR_MESSAGE);
+	}
+
+	protected void signIn(String email, String password) {
+		IAuthenticator Authenticator = new Authenticator();
+		int type = Authenticator.authenticate(email, password);
+		if (type == 1) {
+			Admin u = new Admin(email);
+			u.setVisible(true);
+			setVisible(false);
+		} else if (type == 0) {
+			User u = new User(email);
+			u.setVisible(true);
+			setVisible(false);
+		} else {
+			String message;
+			if (type == -1)
+				message = "Invalid Email !";
+			else if (type == -2)
+				message = "Invalid Password!";
+			else
+				message = "Error while accessing database !";
+			JOptionPane.showMessageDialog(new JFrame(), message, "Dialog",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

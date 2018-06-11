@@ -35,12 +35,11 @@ public class main {
 			}
 			System.out.println(
 					"\n------------test search for books advanced-----------------");
-			ResultSet resultSet = user.searchForBooksAdvanced(
+			String[][] resultSet = user.searchForBooksAdvanced(
 					"category='art' or publisher_name='pub'");
-			while (resultSet.next()) {
-				for (int i = 0; i < 6; i++) {
-					System.out.print(
-							connector.getResultSet().getString(i + 1) + " -- ");
+			for (int j = 0; j < resultSet.length; j++) {
+				for (int i = 0; i < resultSet[0].length; i++) {
+					System.out.print(resultSet[j][i] + " -- ");
 				}
 				System.out.println();
 			}
@@ -50,9 +49,10 @@ public class main {
 			String attribute = "isbn";
 			String value = "1";
 			resultSet = user.searchForBooks(attribute, value);
-			while (resultSet.next()) {
-				for (int i = 0; i < 6; i++)
-					System.out.print(resultSet.getString(i + 1) + " -- ");
+			for (int j = 0; j < resultSet.length; j++) {
+				for (int i = 0; i < resultSet[0].length; i++) {
+					System.out.print(resultSet[j][i] + " -- ");
+				}
 				System.out.println();
 			}
 
@@ -83,7 +83,7 @@ public class main {
 
 			System.out.println(
 					"\n----------------test shopping cart--------------------");
-			IShoppingCart cart = new ShoppingCart();
+			IShoppingCart cart = new ShoppingCart("y@c.o");
 			for (int i = 0; i < books.length; i++) {
 				books[i][6] = "2";
 				cart.addItem(books[i]);
@@ -113,9 +113,10 @@ public class main {
 			String[] isbns = { "20", "19" };
 			admin.editBookInfo(attributes2, values2, isbns);
 			resultSet = user.searchForBooks(attribute, "19");
-			while (resultSet.next()) {
-				for (int i = 0; i < 8; i++)
-					System.out.print(resultSet.getString(i + 1) + " -- ");
+			for (int j = 0; j < resultSet.length; j++) {
+				for (int i = 0; i < resultSet[0].length; i++) {
+					System.out.print(resultSet[j][i] + " -- ");
+				}
 				System.out.println();
 			}
 			System.out.println("ordering book id:1 nocopies:15    "
@@ -130,7 +131,9 @@ public class main {
 				System.out.println(connector.getResultSet().getString(1));
 			System.out.println("\n------------------------------------");
 
-		} catch (SQLException | ParseException e) {
+		} catch (SQLException |
+
+				ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

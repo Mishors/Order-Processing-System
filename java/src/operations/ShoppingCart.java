@@ -9,9 +9,15 @@ import dbManager.IConnector;
 public class ShoppingCart implements IShoppingCart {
 
 	private ArrayList<String[]> books;
+	private String activeUserEmail;
 
-	public ShoppingCart() {
+	// must use constructor with the email parameter
+	private ShoppingCart() {
+	};
+
+	public ShoppingCart(String email) {
 		books = new ArrayList<>();
+		activeUserEmail = email;
 	}
 
 	@Override
@@ -81,10 +87,17 @@ public class ShoppingCart implements IShoppingCart {
 		IConnector connector = Connector.getInstance();
 		for (int i = 0; i < books.size(); i++) {
 			String[] book = books.get(i);
-			connector.run("update books set no_of_copies = no_of_copies - "
-					+ book[book.length - 1] + " where isbn = " + book[0]);
+			connector.run(
+					"insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) "
+							+ "values(" + book[0] + "," + activeUserEmail + ","
+							+ book[book.length - 1] + "," + new Date());
 		}
+		this.emptyCart();
 		return true;
 	}
 
+	public void logOut() {
+		this.emptyCart();
+		Connector.getInstance().closeConnection();
+	}
 }

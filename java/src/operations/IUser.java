@@ -36,7 +36,7 @@ public interface IUser {
 	 * @param value
 	 * @return the books info
 	 */
-	ResultSet searchForBooks(String attribute, Object value);
+	String[][] searchForBooks(String attribute, Object value);
 
 	/**
 	 * same as previous but takes a full string condition from caller
@@ -44,5 +44,5 @@ public interface IUser {
 	 * @param condition
 	 * @return
 	 */
-	ResultSet searchForBooksAdvanced(String condition);
+	String[][] searchForBooksAdvanced(String condition);
 }

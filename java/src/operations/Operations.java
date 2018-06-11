@@ -1,7 +1,9 @@
 package operations;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import dbManager.Authenticator;
 import dbManager.Connector;
@@ -85,7 +87,7 @@ public class Operations implements IAdmin, IUser {
 	}
 
 	@Override
-	public ResultSet searchForBooks(String attribute, Object value) {
+	public String[][] searchForBooks(String attribute, Object value) {
 
 		String command = "select * from books where ";
 
@@ -94,15 +96,38 @@ public class Operations implements IAdmin, IUser {
 		IConnector connector = Connector.getInstance();
 		connector.run(command);
 
-		return connector.getResultSet();
+		ResultSet rSet = connector.getResultSet();
+		return convertResultSet(rSet);
 	}
 
 	@Override
-	public ResultSet searchForBooksAdvanced(String condition) {
+	public String[][] searchForBooksAdvanced(String condition) {
 		IConnector connector = Connector.getInstance();
 		connector.run("select * from books where " + condition);
 
-		return connector.getResultSet();
+		ResultSet rSet = connector.getResultSet();
+		return convertResultSet(rSet);
+	}
+
+	private String[][] convertResultSet(ResultSet rSet) {
+		ArrayList<String[]> arr = new ArrayList<>();
+		String[][] result = null;
+		try {
+			while (rSet.next()) {
+				String[] row = new String[8];
+				for (int i = 0; i < 8; i++)
+					row[i] = rSet.getString(i + 1);
+
+				arr.add(row);
+			}
+			result = arr.toArray(new String[arr.size()][]);
+
+		} catch (SQLException e) {
+			System.out.println(
+					"Error while getting result set after searching for book!");
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	@Override
@@ -191,9 +216,9 @@ public class Operations implements IAdmin, IUser {
 		connector.run("delete from store_orders where isbn = " + isbn);
 
 		if (connector.getUpdatedCount() < 1) { // if failed
-			System.out
-					.println("Error while confirming order for book with isbn = "
-							+ isbn + " !");
+			System.out.println(
+					"Error while confirming order for book with isbn = " + isbn
+							+ " !");
 			return false;
 		}
 		// success

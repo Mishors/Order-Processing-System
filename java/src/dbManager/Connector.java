@@ -18,8 +18,10 @@ public class Connector implements IConnector {
 	}
 
 	public static IConnector getInstance() {
-		if (connector == null)
+		if (connector == null) {
 			connector = new Connector();
+			connector.connect();
+		}
 		return connector;
 	}
 
@@ -45,7 +47,7 @@ public class Connector implements IConnector {
 	public boolean run(String command) {
 		try {
 			boolean result = statement.execute(command);
-			if(command.substring(0, 6).equals("select"))
+			if (command.substring(0, 6).equals("select"))
 				return result;
 			// if not select query, and success return true
 			return true;
@@ -60,17 +62,17 @@ public class Connector implements IConnector {
 
 	@Override
 	public boolean closeConnection() {
-			try {
-				if(connection != null)
-					connection.close();
-				if(statement != null)
-					statement.close();
-				return true;
-			} catch (SQLException e) {
-				System.out.println("Error in closing connection!");
-				e.printStackTrace();
-				return false;
-			}
+		try {
+			if (statement != null)
+				statement.close();
+			if (connection != null)
+				connection.close();
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Error in closing connection!");
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
