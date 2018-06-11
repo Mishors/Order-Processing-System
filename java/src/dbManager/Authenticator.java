@@ -64,7 +64,7 @@ public class Authenticator implements IAuthenticator {
 	}
 
 	@Override
-	public boolean addNewUser(String[] userInfo) {
+	public boolean addNewUser(String[] userInfo, String[] phones) {
 
 		// hash the given user password
 		userInfo[2] = hashPass(userInfo[2]);
@@ -79,7 +79,13 @@ public class Authenticator implements IAuthenticator {
 
 		if (connector.getUpdatedCount() < 0) // an error while inserting
 			return false;
-
+		String command = "";
+		String email = userInfo[0];
+		for (int i = 0; i < phones.length; i++) {
+			command = "insert into user_phones values('" + email + "','"
+					+ phones[i] + "')";
+			connector.run(command);
+		}
 		return true;
 	}
 
@@ -106,16 +112,15 @@ public class Authenticator implements IAuthenticator {
 	}
 
 	public boolean setAsAdmin(String email) {
-		
+
 		IConnector connector = Connector.getInstance();
 		boolean success = connector
-				.run("insert into managers values('"+ email + "')");
+				.run("insert into managers values('" + email + "')");
 		if (!success) {
-			System.out.println(
-					"Database  error while setting user as admin!");
+			System.out.println("Database  error while setting user as admin!");
 			return false;
 		}
 		return true;
 	}
-	
+
 }

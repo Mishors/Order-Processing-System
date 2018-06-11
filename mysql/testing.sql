@@ -6,9 +6,22 @@ select * from books;
 delete from store_orders where isbn=2;
 select * from store_orders;
 select * from managers;
+select * from users;
+select * from user_phones;
 
 update books set no_of_copies=50 where isbn=3;
+insert into authors values(1, 'ta7seen');
+delete from user_phones;
+select * from publishers;
+select * from publisher_phones;
 
+delete from users where email = 'test';
+select * from customer_orders;
+insert into user_phones values ('f@c.o', '010'),('f@c.o', '011'),('f@c.o', '012'),('y@c.o', '013');
+
+delete from users where email='h@c.o';
+delete from authors;
+delete from books where isbn=20;
 
 update books set no_of_copies=100;
 delete from customer_orders;
