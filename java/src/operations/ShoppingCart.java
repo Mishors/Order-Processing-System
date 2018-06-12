@@ -23,13 +23,25 @@ public class ShoppingCart implements IShoppingCart {
 	}
 
 	@Override
-	public void addItem(String[] book) {
+	public boolean addItem(String isbn, String noOfCopies) {
+		Operations operator = new Operations();
+		String[][] result = operator.searchForBooks("isbn", isbn);
+		if (result.length < 1 || result[0].length < 1)
+			return false;
+		String[] book = new String[3];
+		book[0] = isbn;
+		book[1] = noOfCopies;
+		float totalPrice = Float.parseFloat(result[0][4])
+				* Float.parseFloat(noOfCopies);
+		book[2] = String.valueOf(totalPrice); // price
 		books.add(book);
+		return true;
 	}
 
 	@Override
 	public String[][] getItems() {
-
+		if (books.size() == 0)
+			return new String[0][0];
 		String[][] res = new String[books.size()][books.get(0).length];
 		for (int i = 0; i < books.size(); i++)
 			for (int j = 0; j < books.get(0).length; j++)
@@ -41,7 +53,7 @@ public class ShoppingCart implements IShoppingCart {
 	@Override
 	public float getTotalPrices() {
 		float price = 0;
-		final int PRICE_INDEX = 4;
+		final int PRICE_INDEX = 2;
 		for (int i = 0; i < books.size(); i++)
 			price += Float.parseFloat(books.get(i)[PRICE_INDEX]);
 		return price;
@@ -66,7 +78,11 @@ public class ShoppingCart implements IShoppingCart {
 
 	@Override
 	public int getCartSize() {
-		return books.size();
+		int size = 0;
+		for (String[] book : books)
+			size += Integer.parseInt(book[1]);
+
+		return size;
 	}
 
 	@Override
@@ -96,8 +112,8 @@ public class ShoppingCart implements IShoppingCart {
 				connector.run(
 						"insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) "
 								+ "values('" + book[0] + "','" + activeUserEmail
-								+ "','" + book[book.length - 1] + "','"
-								+ dateFormatted + "')");
+								+ "','" + book[1] + "','" + dateFormatted
+								+ "')");
 			} catch (SQLException e) {
 				System.out.println("Error in checking out orders");
 				e.printStackTrace();
@@ -106,6 +122,10 @@ public class ShoppingCart implements IShoppingCart {
 		}
 		this.emptyCart();
 		return true;
+	}
+
+	public void setEmail(String email) {
+		activeUserEmail = email;
 	}
 
 	public void logOut() {

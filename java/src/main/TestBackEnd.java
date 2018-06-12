@@ -20,7 +20,7 @@ public class TestBackEnd {
 		String[] userInfo = { "h@c.o", "yz", "1234", "y", "z", "alex" };
 		String[] phones2 = { "08", "09", "00", "100" };
 
-//		System.out.println(aut.addNewUser(userInfo, phones2));
+		// System.out.println(aut.addNewUser(userInfo, phones2));
 		try {
 
 			System.out.println(
@@ -101,9 +101,9 @@ public class TestBackEnd {
 			System.out.println(
 					"\n----------------test shopping cart--------------------");
 			IShoppingCart cart = new ShoppingCart("y@c.o");
-			for (int i = 0; i < books.length-1; i++) {
+			for (int i = 0; i < books.length - 1; i++) {
 				books[i][6] = "2";
-				cart.addItem(books[i]);
+				cart.addItem(books[i][0], "5");
 			}
 			String[][] res = cart.getItems();
 			for (int i = 0; i < res.length; i++) {
@@ -122,12 +122,12 @@ public class TestBackEnd {
 			System.out.println(
 					"\n----------------test admin operations--------------------");
 			IAdmin admin = new Operations();
-//			admin.addPublisher("publishername", "publisheradd", phones);
+			// admin.addPublisher("publishername", "publisheradd", phones);
 			System.out.println("Add new book-------------");
 			String[] bookInfo = { "20", "title", "pub", "2019", "8.3", "art",
 					"20", "25" };
 			String[] authors = { "tawfik", "rafaat", "zook" };
-//			admin.addNewBook(bookInfo, authors);
+			// admin.addNewBook(bookInfo, authors);
 			resultSet = user.searchForBooks("isbn", "20");
 			for (int j = 0; j < resultSet.length; j++) {
 				for (int i = 0; i < resultSet[0].length; i++) {
@@ -154,7 +154,7 @@ public class TestBackEnd {
 					"confrming order of id:1 good " + admin.confirmOrder("1"));
 			System.out.println("confrming order of id:2000 bad! "
 					+ admin.confirmOrder("2000"));
-//			System.out.println(admin.promoteCustomer("a@c.o"));
+			// System.out.println(admin.promoteCustomer("a@c.o"));
 			connector.run("select * from managers");
 			while (connector.getResultSet().next())
 				System.out.println(connector.getResultSet().getString(1));

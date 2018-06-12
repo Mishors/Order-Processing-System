@@ -37,8 +37,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.view.JasperViewer;
 import operations.IAdmin;
+import operations.IShoppingCart;
 import operations.IUser;
 import operations.Operations;
+import operations.ShoppingCart;
 
 public class Admin extends JFrame {
 
@@ -64,29 +66,16 @@ public class Admin extends JFrame {
 	private String[] bookHeader = { "isbn", "title", "pblisher name",
 			"publishing year", "price", "category", "threshold",
 			"number of copies", "athors" };
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Admin frame = new Admin(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private IShoppingCart sCart;
+	private Admin me;
 
 	/**
 	 * Create the frame.
 	 */
 	public Admin(String email) {
+		me = this;
 		this.email = email;
-
+		sCart = new ShoppingCart(email);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1400, 735);
 		contentPane = new JPanel();
@@ -358,6 +347,7 @@ public class Admin extends JFrame {
 							i++;
 							Admin.email = textField.getText();
 							label.setText("Hi: " + Admin.email);
+							sCart.setEmail(Admin.email);
 						}
 						if (!textField_1.getText().trim().isEmpty()) {
 							data.add(textField_1.getText());
@@ -1141,16 +1131,34 @@ public class Admin extends JFrame {
 				textField_14.setBounds(255, 173, 178, 31);
 				panel_3.add(textField_14);
 
-				JButton btnConfirm_3 = new JButton("Confirm");
+				JButton btnConfirm_3 = new JButton("Order now");
 				btnConfirm_3.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						IAdmin a = new Operations();
+						if (textField.getText().trim().isEmpty()) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"You must enter the book isbn!", "Dialog",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (textField_14.getText().trim().isEmpty()) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"You must enter a valid number of copy!",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						boolean success = a.orderBook(textField.getText(),
 								textField_14.getText());
-						if (!success)
+						if (!success) {
 							JOptionPane.showMessageDialog(new JFrame(),
-									"Failed on ordering book", "Dialog",
-									JOptionPane.ERROR_MESSAGE);
+									"Failed on ordering book, check if isbn exists in the store!",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						} else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Book is ordered successfully!", "Dialog",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm_3.setBounds(440, 329, 89, 23);
@@ -1197,10 +1205,16 @@ public class Admin extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						IAdmin a = new Operations();
 						boolean success = a.confirmOrder(textField.getText());
-						if (!success)
+						if (!success) {
 							JOptionPane.showMessageDialog(new JFrame(),
 									"Failed on Confirming order ", "Dialog",
 									JOptionPane.ERROR_MESSAGE);
+							return;
+						} else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Book order is confirmed successfully!",
+									"Dialog", JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm_3.setBounds(440, 329, 89, 23);
@@ -1248,10 +1262,15 @@ public class Admin extends JFrame {
 						IAdmin a = new Operations();
 						boolean success = a
 								.promoteCustomer(textField.getText());
-						if (!success)
+						if (!success) {
 							JOptionPane.showMessageDialog(new JFrame(),
-									"Customer Email isn`t correct !!! ",
+									"Customer Email isn`t correct or already exists as admin! ",
 									"Dialog", JOptionPane.ERROR_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"customer has been promuted successfully!",
+									"Dialog", JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm_3.setBounds(440, 329, 89, 23);
@@ -1386,9 +1405,10 @@ public class Admin extends JFrame {
 		JButton btnLogOut = new JButton("Log Out\r\n");
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
+				sCart.logOut();
 				WelcomeWindow s = new WelcomeWindow();
 				s.setVisible(true);
+				setVisible(false);
 			}
 		});
 		btnLogOut.setBounds(475, 352, 89, 23);
@@ -1397,9 +1417,10 @@ public class Admin extends JFrame {
 		JButton button_8 = new JButton("Shopping Cart");
 		button_8.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				ShoppingCartView s = new ShoppingCartView(Admin.email, true);
+				ShoppingCartView s = new ShoppingCartView(Admin.email, true,
+						sCart, me);
 				s.setVisible(true);
+				setVisible(false);
 			}
 		});
 		button_8.setBounds(357, 352, 108, 23);

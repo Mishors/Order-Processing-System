@@ -36,7 +36,7 @@ for each row begin
 	update books set books.no_of_copies = books.no_of_copies - new.no_of_copies where books.isbn = new.isbn;
 end;;
 
-
+DELIMITER ;;
 drop trigger if exists confirm_store_order;;
 -- if store order is confirmed, add copies to the book in books table
 create trigger 	confirm_store_order
@@ -56,6 +56,8 @@ for each row begin
 end;;
 
 DELIMITER ;;
+
+
 drop trigger if exists check_phones_is_numbers_for_publishers;;
 -- when insert new rows, check no_of_copies with the threshold
 create trigger 	check_phones_is_numbers_for_publishers
@@ -95,3 +97,16 @@ BEGIN
 END ;;
 
 DELIMITER ;
+
+
+
+SET GLOBAL event_scheduler = ON;
+
+Delimiter $$
+CREATE DEFINER=`root`@`localhost` EVENT order_removal_three_months 
+ON SCHEDULE EVERY 1 DAY
+ON COMPLETION NOT PRESERVE ENABLE DO 
+BEGIN   
+   DELETE FROM customer_orders where timestampdiff(DAY,sale_date,NOW()) >= 90;
+END
+$$

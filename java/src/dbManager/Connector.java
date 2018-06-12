@@ -46,8 +46,8 @@ public class Connector implements IConnector {
 	@Override
 	public void run(String command) throws SQLException {
 
-			boolean result = statement.execute(command);
-			
+		boolean result = statement.execute(command);
+
 	}
 
 	@Override
@@ -57,6 +57,7 @@ public class Connector implements IConnector {
 				statement.close();
 			if (connection != null)
 				connection.close();
+			connection = null;
 			return true;
 		} catch (SQLException e) {
 			System.out.println("Error in closing connection!");

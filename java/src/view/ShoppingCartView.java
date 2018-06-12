@@ -42,27 +42,15 @@ public class ShoppingCartView extends JFrame {
 	private JTextField textField_11;
 	private JTextField textField_12;
 	private JTextField textField_14;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ShoppingCartView frame = new ShoppingCartView(null, false);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private String[] bookHeader = { "isbn", "no. of copies", "total price" };
+	IShoppingCart shoppingCart;
 
 	/**
 	 * Create the frame.
 	 */
-	public ShoppingCartView(String email, boolean admin) {
+	public ShoppingCartView(String email, boolean admin, IShoppingCart sCart,
+			JFrame caller) {
+		shoppingCart = sCart;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1400, 735);
 		contentPane = new JPanel();
@@ -130,99 +118,53 @@ public class ShoppingCartView extends JFrame {
 				lblIsbn.setBounds(44, 44, 191, 31);
 				panel_3.add(lblIsbn);
 
-				JLabel lblTitle = new JLabel("Title");
-				lblTitle.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblTitle.setBounds(44, 86, 191, 31);
-				panel_3.add(lblTitle);
-
-				JLabel lblPublisherName = new JLabel("Publisher name");
-				lblPublisherName.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblPublisherName.setBounds(44, 131, 191, 31);
-				panel_3.add(lblPublisherName);
-
-				JLabel lblPublishingYear = new JLabel("Publishing year");
-				lblPublishingYear.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblPublishingYear.setBounds(44, 175, 191, 31);
-				panel_3.add(lblPublishingYear);
-
-				JLabel lblPrice = new JLabel("Price");
-				lblPrice.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblPrice.setBounds(44, 216, 191, 31);
-				panel_3.add(lblPrice);
-
-				JLabel lblCategory = new JLabel("Category");
-				lblCategory.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblCategory.setBounds(44, 256, 191, 31);
-				panel_3.add(lblCategory);
-
-				JLabel lblThreshold = new JLabel("Threshold");
-				lblThreshold.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblThreshold.setBounds(44, 295, 191, 31);
-				panel_3.add(lblThreshold);
-
-				JLabel lblNoOfCopies = new JLabel("No of copies");
-				lblNoOfCopies.setFont(new Font("Calibri", Font.PLAIN, 15));
-				lblNoOfCopies.setBounds(44, 335, 191, 31);
-				panel_3.add(lblNoOfCopies);
-
 				textField = new JTextField();
 				textField.setPreferredSize(new Dimension(6, 23));
 				textField.setBounds(255, 44, 178, 31);
 				panel_3.add(textField);
 				textField.setColumns(10);
 
+				JLabel lblnoOfCopies = new JLabel("number of copies");
+				lblnoOfCopies.setFont(new Font("Calibri", Font.PLAIN, 15));
+				lblnoOfCopies.setBounds(44, 84, 191, 31);
+				panel_3.add(lblnoOfCopies);
+
 				textField_6 = new JTextField();
 				textField_6.setPreferredSize(new Dimension(6, 23));
-				textField_6.setColumns(10);
-				textField_6.setBounds(255, 86, 178, 31);
+				textField_6.setBounds(255, 84, 178, 31);
 				panel_3.add(textField_6);
-
-				textField_7 = new JTextField();
-				textField_7.setPreferredSize(new Dimension(6, 23));
-				textField_7.setColumns(10);
-				textField_7.setBounds(255, 131, 178, 31);
-				panel_3.add(textField_7);
-
-				textField_8 = new JTextField();
-				textField_8.setPreferredSize(new Dimension(6, 23));
-				textField_8.setColumns(10);
-				textField_8.setBounds(255, 175, 178, 31);
-				panel_3.add(textField_8);
-
-				textField_9 = new JTextField();
-				textField_9.setPreferredSize(new Dimension(6, 23));
-				textField_9.setColumns(10);
-				textField_9.setBounds(255, 216, 178, 31);
-				panel_3.add(textField_9);
-
-				textField_10 = new JTextField();
-				textField_10.setPreferredSize(new Dimension(6, 23));
-				textField_10.setColumns(10);
-				textField_10.setBounds(255, 256, 178, 31);
-				panel_3.add(textField_10);
-
-				textField_11 = new JTextField();
-				textField_11.setPreferredSize(new Dimension(6, 23));
-				textField_11.setColumns(10);
-				textField_11.setBounds(255, 295, 178, 31);
-				panel_3.add(textField_11);
-
-				textField_12 = new JTextField();
-				textField_12.setPreferredSize(new Dimension(6, 23));
-				textField_12.setColumns(10);
-				textField_12.setBounds(255, 335, 178, 31);
-				panel_3.add(textField_12);
+				textField_6.setColumns(10);
 
 				JButton btnConfirm_1 = new JButton("Confirm");
 				btnConfirm_1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						IShoppingCart s = new ShoppingCart(email);
-						String[] info = { textField.getText(),
-								textField_6.getText(), textField_7.getText(),
-								textField_8.getText(), textField_9.getText(),
-								textField_10.getText(), textField_11.getText(),
-								textField_12.getText() };
-						s.addItem(info);
+
+						String isbn = textField.getText().trim();
+						String noOfCopies = textField_6.getText().trim();
+						if (isbn.isEmpty()) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"You must put a valid isbn!", "Dialog",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						if (noOfCopies.isEmpty()) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"You must put a valid number of copies!",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						boolean success = shoppingCart.addItem(isbn,
+								noOfCopies);
+						if (!success)
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Eror, this isbn is not exists!", "Dialog",
+									JOptionPane.ERROR_MESSAGE);
+						else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Book with isbn:" + isbn
+											+ " is successfully added to cart!",
+									"Dialog", JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm_1.setBounds(466, 343, 89, 23);
@@ -253,9 +195,8 @@ public class ShoppingCartView extends JFrame {
 				lblGetUserInfo.setBounds(20, 11, 182, 31);
 				panel_3.add(lblGetUserInfo);
 
-				IShoppingCart s = new ShoppingCart(email);
-				String[][] data = s.getItems();
-
+				String[][] data = shoppingCart.getItems();
+				Table table = new Table(bookHeader, data);
 			}
 		});
 		button.setBounds(289, 104, 89, 23);
@@ -287,9 +228,8 @@ public class ShoppingCartView extends JFrame {
 				textField.setBounds(255, 79, 178, 31);
 				panel_3.add(textField);
 				textField.setColumns(10);
-
-				IShoppingCart s = new ShoppingCart(email);
-				textField.setText(Float.toString(s.getTotalPrices()));
+				textField
+						.setText(Float.toString(shoppingCart.getTotalPrices()));
 			}
 		});
 		button_2.setBounds(289, 146, 89, 23);
@@ -330,12 +270,25 @@ public class ShoppingCartView extends JFrame {
 				JButton btnConfirm_3 = new JButton("Confirm");
 				btnConfirm_3.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						IShoppingCart s = new ShoppingCart(email);
-						boolean success = s.removeItem(textField.getText());
-						if (!success)
+						String isbn = textField.getText();
+						if (isbn.trim().isEmpty()) {
 							JOptionPane.showMessageDialog(new JFrame(),
-									"Failed to remove the book", "Dialog",
-									JOptionPane.ERROR_MESSAGE);
+									"You must enter a book isbn to remove",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						boolean success = shoppingCart.removeItem(isbn);
+						if (!success) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Failed to remove the book, check that it is in cart first!",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						} else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Book with isbn:" + isbn
+											+ " is successfully removed from cart!",
+									"Dialog", JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm_3.setBounds(440, 329, 89, 23);
@@ -350,7 +303,7 @@ public class ShoppingCartView extends JFrame {
 		lblEmptyCart.setBounds(36, 215, 157, 23);
 		panel_2.add(lblEmptyCart);
 
-		JButton button_4 = new JButton("OK");
+		JButton button_4 = new JButton("empty");
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panel_3.removeAll();
@@ -366,8 +319,10 @@ public class ShoppingCartView extends JFrame {
 				lblGetUserInfo.setBounds(20, 11, 240, 31);
 				panel_3.add(lblGetUserInfo);
 
-				IShoppingCart s = new ShoppingCart(email);
-				s.emptyCart();
+				shoppingCart.emptyCart();
+				JOptionPane.showMessageDialog(new JFrame(),
+						"Cart is now empty!", "Dialog",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		button_4.setBounds(289, 216, 89, 23);
@@ -394,9 +349,7 @@ public class ShoppingCartView extends JFrame {
 				textField.setBounds(255, 79, 178, 31);
 				panel_3.add(textField);
 				textField.setColumns(10);
-
-				IShoppingCart s = new ShoppingCart(email);
-				textField.setText(String.valueOf(s.getCartSize()));
+				textField.setText(String.valueOf(shoppingCart.getCartSize()));
 			}
 		});
 		button_5.setBounds(289, 250, 89, 23);
@@ -448,20 +401,35 @@ public class ShoppingCartView extends JFrame {
 				JButton btnConfirm_3 = new JButton("Confirm");
 				btnConfirm_3.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						IShoppingCart s = new ShoppingCart(email);
-						DateFormat format = new SimpleDateFormat("MMMM d, yyyy",
-								Locale.ENGLISH);
-						Date date = null;
-						try {
-							date = (Date) format.parse(textField_14.getText());
-						} catch (ParseException e1) {
-							e1.printStackTrace();
-						}
-						boolean success = s.checkout(textField.getText(), date);
-						if (!success)
+						String d = textField_14.getText().trim();
+						String[] dateSplit = d.split("-");
+						if (dateSplit.length != 3 || dateSplit[0].isEmpty()
+								|| dateSplit[1].isEmpty()
+								|| dateSplit[2].isEmpty()) {
+
 							JOptionPane.showMessageDialog(new JFrame(),
-									"checkout failed !!!!", "Dialog",
-									JOptionPane.ERROR_MESSAGE);
+									"Enter a valid date in form 'dd-mm-yyyy",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						int year = Integer.parseInt(dateSplit[2]);
+						int month = Integer.parseInt(dateSplit[1]);
+						int day = Integer.parseInt(dateSplit[0]);
+
+						Date date = new Date(year, month, day);
+
+						boolean success = shoppingCart
+								.checkout(textField.getText(), date);
+						if (!success) {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"checkout failed, put a valid no of copies for books !",
+									"Dialog", JOptionPane.ERROR_MESSAGE);
+							return;
+						} else {
+							JOptionPane.showMessageDialog(new JFrame(),
+									"Checked out seccessfully!", "Dialog",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				});
 				btnConfirm_3.setBounds(440, 329, 89, 23);
@@ -487,14 +455,8 @@ public class ShoppingCartView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				IShoppingCart s = new ShoppingCart(email);
 				s.logOut();
+				caller.setVisible(true);
 				setVisible(false);
-				if (admin) {
-					Admin a = new Admin(email);
-					a.setVisible(true);
-				} else {
-					User u = new User(email);
-					u.setVisible(true);
-				}
 
 			}
 		});

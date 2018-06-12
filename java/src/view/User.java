@@ -28,8 +28,11 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.transform.Templates;
 
+import operations.IShoppingCart;
 import operations.IUser;
 import operations.Operations;
+import operations.ShoppingCart;
+
 import javax.swing.border.CompoundBorder;
 
 public class User extends JFrame {
@@ -57,28 +60,16 @@ public class User extends JFrame {
 	private String[] bookHeader = { "isbn", "title", "pblisher name",
 			"publishing year", "price", "category", "threshold",
 			"number of copies", "athors" };
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					User frame = new User(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private IShoppingCart sCart;
+	private User me;
 
 	/**
 	 * Create the frame.
 	 */
 
 	public User(String email) {
+		me = this;
+		sCart = new ShoppingCart(email);
 		User.email = email;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1400, 735);
@@ -357,6 +348,7 @@ public class User extends JFrame {
 							i++;
 							User.email = textField.getText();
 							label.setText("Hi: " + User.email);
+							sCart.setEmail(User.email);
 						}
 						if (!textField_1.getText().trim().isEmpty()) {
 							data.add(textField_1.getText());
@@ -681,9 +673,11 @@ public class User extends JFrame {
 		JButton btnLogOut = new JButton("Log Out\r\n");
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
 				WelcomeWindow s = new WelcomeWindow();
 				s.setVisible(true);
+				setVisible(false);
+				sCart.logOut();
+
 			}
 		});
 		btnLogOut.setBounds(475, 338, 89, 23);
@@ -692,9 +686,11 @@ public class User extends JFrame {
 		JButton btnShoppingCart = new JButton("Shopping Cart");
 		btnShoppingCart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
-				ShoppingCartView s = new ShoppingCartView(User.email, false);
+
+				ShoppingCartView s = new ShoppingCartView(User.email, false,
+						sCart, me);
 				s.setVisible(true);
+				setVisible(false);
 			}
 		});
 		btnShoppingCart.setBounds(346, 338, 108, 23);

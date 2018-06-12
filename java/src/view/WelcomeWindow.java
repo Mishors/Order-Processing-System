@@ -40,23 +40,6 @@ public class WelcomeWindow extends JFrame {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField phonesTextFiled;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					WelcomeWindow frame = new WelcomeWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -327,6 +310,7 @@ public class WelcomeWindow extends JFrame {
 	protected void signIn(String email, String password) {
 		IAuthenticator Authenticator = new Authenticator();
 		int type = Authenticator.authenticate(email, password);
+		System.out.println(type + " ----------------------");
 		if (type == 1) {
 			System.out.println(
 					email + " has been logged in successfully as admin!");

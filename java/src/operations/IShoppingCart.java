@@ -7,11 +7,11 @@ public interface IShoppingCart {
 	/**
 	 * add item to the cart
 	 * 
-	 * @param book,
-	 *            array of string representin book info and the last element is
-	 *            the number of copies
+	 * @param isbn,
+	 *            of the book to add to the cart
+	 * @return true if isbn exists, false otherwise
 	 */
-	void addItem(String[] book);
+	boolean addItem(String isbn, String noOfCopies);
 
 	/**
 	 * get items currently in the cart
@@ -63,5 +63,12 @@ public interface IShoppingCart {
 	 * close connection and empty cart
 	 */
 	public void logOut();
+
+	/**
+	 * edit active user email
+	 * 
+	 * @param email
+	 */
+	public void setEmail(String email);
 
 }

@@ -23,6 +23,7 @@ public class Authenticator implements IAuthenticator {
 
 		try {
 			IConnector connector = Connector.getInstance();
+			connector.connect();
 			connector.run(
 					"select * from users where " + "email = '" + email + "'");
 			boolean isUser = connector.getResultSet().first();
@@ -45,6 +46,7 @@ public class Authenticator implements IAuthenticator {
 
 			connector.run(
 					"select * from managers where mngr_email='" + email + "'");
+			System.out.println(email + " **********************");
 			if (connector.getResultSet().first()) // if manager
 				return 1;
 			// normal user
@@ -66,6 +68,7 @@ public class Authenticator implements IAuthenticator {
 
 		// start transaction
 		IConnector connector = Connector.getInstance();
+		connector.connect();
 		try {
 			connector.run("start transaction");
 		} catch (SQLException e1) {

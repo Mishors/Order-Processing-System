@@ -97,4 +97,4 @@ insert into categories values ("religion");
 insert into categories values ("history");
 insert into categories values ("geography");
 
-set autocommit = 0;
+set autocommit = 1;

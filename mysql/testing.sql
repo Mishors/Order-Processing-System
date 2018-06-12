@@ -1,13 +1,23 @@
 call search_by_category('art');
 use book_store;
 
+
+
+insert into managers values("a@c.o");
+
+select * from managers where mngr_email='a@c.o';
+
 select * from store_orders;
-select * from books;
-delete from store_orders where isbn=2;
+
+select * from books where isbn=9;
+delete from store_orders where isbn=9;
 select * from store_orders;
 select * from managers;
 select * from users;
 select * from user_phones;
+
+delete from store_orders where isbn=1;
+select * from books where isbn=1;
 
 update books set no_of_copies=50 where isbn=3;
 insert into authors values(1, 'ta7seen');
@@ -28,7 +38,7 @@ delete from customer_orders;
 select * from store_orders;
 delete from store_orders;
 select * from customer_orders;
-insert into customer_orders (isbn, cstmr_email, no_of_copies, sale_date) values(1, "y@c.o", 1, now());
+insert into customer_orders (id,isbn, cstmr_email, no_of_copies, sale_date) values(16,2, "y@c.o", 1, now());
 select * from books;
 select * from users;
 select * from customer_orders;
@@ -61,10 +71,13 @@ insert into users values("d@c.o", "yz","1234","y", "z", "alex");
 insert into users values("e@c.o", "yz","1234","y", "z", "alex");
 insert into users values("f@c.o", "yz","1234","y", "z", "alex");
 delete from managers;
-insert into managers values("y@c.o"),("a@c.o");
-update books set no_of_copies = 10 where isbn = 3;
+insert into managers values("a@c.o");
+update books set no_of_copies = 10 where isbn = 1;
+
+select * from managers;
 
 select * from books;
 
+insert into managers values("y@c.o");
 
 select * from categories where (category='science' or category='art') and (category='science' or category='do');
