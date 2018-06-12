@@ -266,9 +266,7 @@ public class WelcomeWindow extends JFrame {
 				String temp = phonesTextFiled.getText();
 				temp = temp.trim();
 				phones = temp.split(",");
-				System.out.println(phones[0]);
-				System.out.println(
-						temp + "* ******" + phones.length + "  ******");
+				
 				signUp(info, phones);
 			}
 		});

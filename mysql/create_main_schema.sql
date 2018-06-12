@@ -2,6 +2,7 @@ drop schema if exists book_store;
 create schema if not exists book_store;
 use book_store;
 
+
 create table books(
 	isbn int not null,
     title varchar(100) not null,
@@ -95,3 +96,5 @@ insert into categories values ("art");
 insert into categories values ("religion");
 insert into categories values ("history");
 insert into categories values ("geography");
+
+set autocommit = 0;

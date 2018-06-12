@@ -69,6 +69,12 @@ public class Operations implements IAdmin, IUser {
 		if (attributes.length != values.length) {
 			System.out.println(
 					"Error in editing user info, attributes and values lengths don't match");
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		}
 
@@ -107,6 +113,12 @@ public class Operations implements IAdmin, IUser {
 				connector.run(command);
 			} catch (SQLException e) {
 				// error while updating
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				e.printStackTrace();
 				return false;
 			}
@@ -120,6 +132,12 @@ public class Operations implements IAdmin, IUser {
 		try {
 			connector.run(command);
 		} catch (SQLException e) {
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			System.out.println("Error while excuting : " + command);
 			e.printStackTrace();
 			return false;
@@ -134,6 +152,12 @@ public class Operations implements IAdmin, IUser {
 			try {
 				connector.run(command);
 			} catch (SQLException e) {
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				System.out.println("Error while excuting : " + command);
 				e.printStackTrace();
 				return false;
@@ -255,6 +279,12 @@ public class Operations implements IAdmin, IUser {
 		try {
 			connector.run("insert into books values(" + values + ")");
 		} catch (SQLException e) {
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 			return false;
 		}
@@ -268,6 +298,12 @@ public class Operations implements IAdmin, IUser {
 				connector.run("insert into authors values('" + bookInfo[0]
 						+ "','" + authors[i] + "')");
 			} catch (SQLException e) {
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				e.printStackTrace();
 				return false;
 			}
@@ -302,30 +338,47 @@ public class Operations implements IAdmin, IUser {
 			return false;
 		}
 
-		String command = "update books set ";
+		String command;
 
-		// adding values in command
-		for (int i = 0; i < attributes.length; i++) {
-			command += attributes[i] + "='" + values[i] + "'";
-			if (i != attributes.length - 1)
-				command += ", ";
-		}
+		if (attributes.length != 0) {
 
-		// adding where condition
-		command += " where isbn=" + isbn;
+			command = "update books set ";
 
-		try {
-			connector.run(command);
-		} catch (SQLException e) {
-			System.out.println("Error while excuting : " + command);
-			e.printStackTrace();
-			return false;
+			// adding values in command
+			for (int i = 0; i < attributes.length; i++) {
+				command += attributes[i] + "='" + values[i] + "'";
+				if (i != attributes.length - 1)
+					command += ", ";
+			}
+
+			// adding where condition
+			command += " where isbn=" + isbn;
+
+			try {
+				connector.run(command);
+			} catch (SQLException e) {
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				System.out.println("Error while excuting : " + command);
+				e.printStackTrace();
+				return false;
+			}
 		}
 
 		command = "delete from authors where isbn=" + isbn;
 		try {
 			connector.run(command);
 		} catch (SQLException e) {
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			System.out.println("Error while excuting : " + command);
 			e.printStackTrace();
 			return false;
@@ -338,6 +391,12 @@ public class Operations implements IAdmin, IUser {
 			try {
 				connector.run(command);
 			} catch (SQLException e) {
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				System.out.println("Error while excuting : " + command);
 				e.printStackTrace();
 				return false;
@@ -379,6 +438,12 @@ public class Operations implements IAdmin, IUser {
 						+ noOfCopies + ")");
 			}
 			if (connector.getUpdatedCount() < 1) { // if failed
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				System.out.println("Error while inserting order!");
 				return false;
 			}
@@ -394,6 +459,12 @@ public class Operations implements IAdmin, IUser {
 			// success
 			return true;
 		} catch (SQLException e) {
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			System.out.println("Error while ordering book!");
 			e.printStackTrace();
 			return false;
@@ -416,6 +487,12 @@ public class Operations implements IAdmin, IUser {
 		try {
 			connector.run("delete from store_orders where isbn = " + isbn);
 		} catch (SQLException e) {
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			System.out.println("Error in confirming order");
 			e.printStackTrace();
 			return false;
@@ -425,6 +502,12 @@ public class Operations implements IAdmin, IUser {
 			System.out.println(
 					"Error while confirming order for book with isbn = " + isbn
 							+ " !");
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		}
 
@@ -451,6 +534,12 @@ public class Operations implements IAdmin, IUser {
 			System.out.println(
 					"Error while promoting customer: " + customerEmail + " !");
 			e.printStackTrace();
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		}
 
@@ -469,6 +558,12 @@ public class Operations implements IAdmin, IUser {
 					"Error in add publisher in publisher name may be already exist "
 							+ "or address may be null !");
 			e.printStackTrace();
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return -1;
 		}
 
@@ -479,6 +574,12 @@ public class Operations implements IAdmin, IUser {
 			} catch (SQLException e) {
 				System.out.println("Error in add publisher in phnes numbers !");
 				e.printStackTrace();
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				return -2;
 			}
 

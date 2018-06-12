@@ -81,6 +81,12 @@ public class Authenticator implements IAuthenticator {
 		try {
 			connector.run("insert into users values(" + values + ")");
 		} catch (SQLException e) { // an error while inserting info
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 			return -1;
 		}
@@ -93,6 +99,12 @@ public class Authenticator implements IAuthenticator {
 			try {
 				connector.run(command);
 			} catch (SQLException e) { // an error while inserting phones
+				try {
+					connector.run("rollback");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				e.printStackTrace();
 				return -2;
 			}
@@ -147,6 +159,12 @@ public class Authenticator implements IAuthenticator {
 		} catch (SQLException e) {
 			System.out.println("Database  error while setting user as admin!");
 			e.printStackTrace();
+			try {
+				connector.run("rollback");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return false;
 		}
 

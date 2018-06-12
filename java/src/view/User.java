@@ -347,7 +347,6 @@ public class User extends JFrame {
 				JButton btnConfirm = new JButton("Confirm");
 				btnConfirm.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						IUser user = new Operations();
 						ArrayList<String> data = new ArrayList<>();
 						ArrayList<String> att = new ArrayList<>();
 						int i = 0;
